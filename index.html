@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>COMS 4170 Project - Congress Tracker</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet"> 
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand">Congress Tracker</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><u>F</u>avorites<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Name 1</a></li>
+              </ul>
+            </li>
+            <li>
+              <a type="button" class="btn btn-link" id="btnSearch" onclick="btnSearchOnClick()"><u>S</u>how Search</a>
+            <li>
+            <li>
+              <a data-toggle="modal" href="#mdlHelp" id="btnHelpModal" onclick="btnHelpModalOnClick()" title="click to see the help document"><u>H</u>elp</a>
+            </li>            
+          </ul>
+        </div>
+      </div>      
+    </div>
+
+    <div class="container theme-showcase" id="divSearch" style="display:none">
+      <div class="jumbotron">
+        <form class="form-vertical">          
+          <div class="form-group">            
+            <label for="cboState" class="col-sm-1 control-label" align="right" style="font-size:16px; padding-left:50px; padding-top:6px">State</label>
+            <div class="col-sm-2">
+              <select class="form-control" id="cboState">
+                <option>NY</option>
+              </select>
+            </div>                
+          </div>
+          <div class="form-group">
+            <label for="cboChamber" class="col-sm-1 control-label" align="right" style="font-size:16px; padding-left:20px; padding-top:6px">Chamber</label>
+            <div class="col-sm-2">
+              <select class="form-control" id="cboChamber">
+                <option>House</option>
+                <option>Senate</option>
+              </select>
+            </div>                
+          </div>
+          <div class="form-group">
+            <label for="cboDistrict" class="col-sm-1 control-label" align="right" style="font-size:16px; padding-left:33px; padding-top:6px">District</label>
+            <div class="col-sm-2">
+              <select class="form-control" id="cboDistrict">
+                <option>1</option>
+                <option>2</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-3" style="padding-left:40px">
+              <a href="person.html" type="button" class="btn btn-primary" id="btnSearch"><u>S</u>earch</a>
+              <button class="btn btn-warning" id="btnClear"><u>C</u>lear</button>
+              <button type="button" id="btnHide" class="btn btn-link" onclick="btnHideOnClick()">Hide</button>
+            </div>
+          </div>          
+        </form>
+      </div>
+    </div>
+    
+    <div class="panel-body" id="divBody">
+    </div>
+    
+    <div class="modal fade" id="mdlHelp" role="dialog" data-backdrop="false">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <form class="form-horizontal">
+            <div class="modal-header">
+              <p><b>Help</b></p>
+            </div>
+            <div id="divHelpModalBody" style="padding:30px">
+              <p>Help</p>
+            <div class="modal-footer">
+              <a class="btn btn-default" data-dismiss="modal" id="btnHelpClose"><u>C</u>lose</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/congress.js"></script>
+  </body>
+</html>
