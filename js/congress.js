@@ -5,20 +5,18 @@ var auth = {
     article_search_api_key: "",
 }
 
-var comments = [];
-var offset = -1;
-
 $(document).ready(function() {
+  if (!store.enabled) {
+    alert('Local storage is not supported by your browser. Please disable "Private Mode", or upgrade to a modern browser.')
+    return
+  }
 });
 
 $(document).keydown(function(key) {
 });
 
-
 function btnSearchOnClick() {
-  $("#divSearch").slideDown("slow");
-}
-
-function btnHideOnClick() {
-  $("#divSearch").slideUp("slow");
+  store.set("state", $("#cboState").val());
+  store.set("chamber", $("#cboChamber").val());
+  store.set("district", $("#cboDistrict").val());   
 }

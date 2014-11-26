@@ -5,12 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>COMS 4170 Project - Congress Tracker</title>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet"> 
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
   </head>
   <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="navbar navbar-inverse" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
@@ -23,15 +24,15 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a data-toggle="modal" href="#mdlSearch" id="btnSearchModal"><u>S</u>earch</a>
+            </li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><u>F</u>avorites<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="#">Name 1</a></li>
               </ul>
-            </li>
-            <li>
-              <a type="button" class="btn btn-link" id="btnSearch" onclick="btnSearchOnClick()"><u>S</u>how Search</a>
-            <li>
+            </li>            
             <li>
               <a data-toggle="modal" href="#mdlHelp" id="btnHelpModal" onclick="btnHelpModalOnClick()" title="click to see the help document"><u>H</u>elp</a>
             </li>            
@@ -40,47 +41,51 @@
       </div>      
     </div>
 
-    <div class="container theme-showcase" id="divSearch" style="display:none">
-      <div class="jumbotron">
-        <form class="form-vertical">          
-          <div class="form-group">            
-            <label for="cboState" class="col-sm-1 control-label" align="right" style="font-size:16px; padding-left:50px; padding-top:6px">State</label>
-            <div class="col-sm-2">
-              <select class="form-control" id="cboState">
-                <option>NY</option>
-              </select>
-            </div>                
-          </div>
-          <div class="form-group">
-            <label for="cboChamber" class="col-sm-1 control-label" align="right" style="font-size:16px; padding-left:20px; padding-top:6px">Chamber</label>
-            <div class="col-sm-2">
-              <select class="form-control" id="cboChamber">
-                <option>House</option>
-                <option>Senate</option>
-              </select>
-            </div>                
-          </div>
-          <div class="form-group">
-            <label for="cboDistrict" class="col-sm-1 control-label" align="right" style="font-size:16px; padding-left:33px; padding-top:6px">District</label>
-            <div class="col-sm-2">
-              <select class="form-control" id="cboDistrict">
-                <option>1</option>
-                <option>2</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-3" style="padding-left:40px">
-              <a href="person.html" type="button" class="btn btn-primary" id="btnSearch"><u>S</u>earch</a>
-              <button class="btn btn-warning" id="btnClear"><u>C</u>lear</button>
-              <button type="button" id="btnHide" class="btn btn-link" onclick="btnHideOnClick()">Hide</button>
-            </div>
-          </div>          
-        </form>
-      </div>
+    <div class="panel-body" id="divBody">
     </div>
     
-    <div class="panel-body" id="divBody">
+    <div class="modal fade" id="mdlSearch" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <form class="form-horizontal">
+            <div class="modal-header">
+              <p>Congress Member Search</p>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="cboState" class="col-sm-3 control-label">State:</label>
+                <div class="col-sm-9">
+                  <select class="form-control" id="cboState">
+                    <option>NY</option>
+                  </select>
+                </div>                
+              </div>
+              <div class="form-group">
+                <label for="txtUsername" class="col-sm-3 control-label">Chamber:</label>
+                <div class="col-sm-9">
+                  <select class="form-control" id="cboChamber">
+                    <option>House</option>
+                    <option>Senate</option>
+                  </select>
+                </div>                
+              </div>
+              <div class="form-group">
+                <label for="dteUploadedSince" class="col-sm-3 control-label">District:</label>
+                <div class="col-sm-9" id="datepicker">
+                  <select class="form-control" id="cboDistrict">
+                    <option>1</option>
+                    <option>2</option>
+                  </select>
+                </div>               
+              </div>                        
+            </div>
+            <div class="modal-footer">
+              <a class="btn btn-default" data-dismiss="modal" id="btnClose"><u>C</u>lose</a>
+              <a href="person.html" type="button" class="btn btn-primary" id="btnSearch" onclick="btnSearchOnClick()"><u>S</u>earch</a>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
     
     <div class="modal fade" id="mdlHelp" role="dialog" data-backdrop="false">
@@ -102,6 +107,7 @@
     
     <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/congress.js"></script>
+    <script type="text/javascript" src="js/store.min.js"></script>        
+    <script type="text/javascript" src="js/congress.js"></script>    
   </body>
 </html>

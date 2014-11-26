@@ -1,0 +1,32 @@
+.democrat {
+  border-radius: 5px;
+  border: 1px solid blue;  
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+
+.republican {
+  border-radius: 5px;
+  border: 1px solid red; 
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+
+.default {
+  border-radius: 5px;
+  border: 1px solid black; 
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+
+label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #7A3E48;
+}
+
+text {
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
+}
