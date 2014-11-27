@@ -28,7 +28,7 @@
               <a data-toggle="modal" href="#mdlSearch" id="btnSearchModal"><u>S</u>earch</a>
             </li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><u>F</u>avorites<span class="caret"></span></a>
+              <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><u>F</u>avorites<span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="#">Name 1</a></li>
               </ul>
@@ -50,7 +50,8 @@
           <div class="col-md-5" id="divMember0"></div>
           <div class="col-md-2"></div>
           <div class="col-md-5" id="divMember1"></div>
-        </div>
+          <div class="col-md-12"><hr></div>
+        </div>        
       </div>
     </div>
     
@@ -65,15 +66,66 @@
               <div class="form-group">
                 <label for="cboState" class="col-sm-3 control-label">State:</label>
                 <div class="col-sm-9">
-                  <select class="form-control" id="cboState">
+                  <select class="form-control" id="cboState" onchange="cboStateOnChange()">
+                    <option selected="selected" value=""/>
+                    <option>AL</option> 
+                    <option>AK</option> 
+                    <option>AZ</option> 
+                    <option>AR</option> 
+                    <option>CA</option> 
+                    <option>CO</option> 
+                    <option>CT</option> 
+                    <option>DE</option> 
+                    <option>FL</option> 
+                    <option>GA</option> 
+                    <option>HI</option> 
+                    <option>ID</option> 
+                    <option>IL</option> 
+                    <option>IN</option> 
+                    <option>IA</option> 
+                    <option>KS</option> 
+                    <option>KY</option> 
+                    <option>LA</option> 
+                    <option>ME</option> 
+                    <option>MD</option> 
+                    <option>MA</option> 
+                    <option>MI</option> 
+                    <option>MN</option> 
+                    <option>MS</option> 
+                    <option>MO</option> 
+                    <option>MT</option>
+                    <option>NE</option>
+                    <option>NV</option>
+                    <option>NH</option>
+                    <option>NJ</option>
+                    <option>NM</option>
                     <option>NY</option>
+                    <option>NC</option>
+                    <option>ND</option>
+                    <option>OH</option>
+                    <option>OK</option>
+                    <option>OR</option>
+                    <option>PA</option>
+                    <option>RI</option>
+                    <option>SC</option>
+                    <option>SD</option>
+                    <option>TN</option>
+                    <option>TX</option>
+                    <option>UT</option>
+                    <option>VT</option>
+                    <option>VA</option>
+                    <option>WA</option>
+                    <option>WV</option>
+                    <option>WI</option>
+                    <option>WY</option>
                   </select>
                 </div>                
               </div>
               <div class="form-group">
                 <label for="txtUsername" class="col-sm-3 control-label">Chamber:</label>
                 <div class="col-sm-9">
-                  <select class="form-control" id="cboChamber">
+                  <select class="form-control" id="cboChamber" onchange="cboChamberOnChange()">
+                    <option selected="selected" value=""/>
                     <option>House</option>
                     <option>Senate</option>
                   </select>
@@ -82,16 +134,14 @@
               <div class="form-group">
                 <label for="dteUploadedSince" class="col-sm-3 control-label">District:</label>
                 <div class="col-sm-9" id="datepicker">
-                  <select class="form-control" id="cboDistrict">
-                    <option>1</option>
-                    <option>2</option>
+                  <select class="form-control" id="cboDistrict" disabled="true" onchange="cboDistrictOnChange()">
                   </select>
                 </div>               
               </div>                        
             </div>
             <div class="modal-footer">
               <a class="btn btn-default" data-dismiss="modal" id="btnClose"><u>C</u>lose</a>
-              <a href="person.html" type="button" class="btn btn-primary" id="btnSearch" onclick="btnSearchOnClick()"><u>S</u>earch</a>
+              <a href="person.html" type="button" class="btn btn-primary" id="btnSearch" onclick="btnSearchOnClick()" disabled="true"><u>S</u>earch</a>
             </div>
           </form>
         </div>

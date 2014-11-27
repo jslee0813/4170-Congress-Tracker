@@ -67,7 +67,7 @@ function getMemberBio() {
 
 function renderMembers(index) {
   for (var i = 0; i < members.length; i++) {
-    var content = "<p><a href='#' id='btnMember" + i + "' onclick='btnMemberOnClick(" + i + ")'> \
+    var content = "<p><button id='btnMember" + i + "' style='outline:0' class='btn btn-link btn-xs' onclick='btnMemberOnClick(" + i + ")'> \
         <span id='spnMember" + i + "' class='glyphicon glyphicon-";
   
     if (index != i && members[i].expanded) 
@@ -75,7 +75,7 @@ function renderMembers(index) {
     else
       content = content + "expand";
     
-    content = content + "' aria-hidden='true' style='font-size:18px'></span></a>&nbsp;&nbsp;<span style='font-size:18px'>" + members[i].name + "</span></p>";
+    content = content + "' aria-hidden='true' style='font-size:18px'></span></button>&nbsp;&nbsp;<span style='font-size:18px'>" + members[i].name + "</span></p>";
     content = content + "<div id='divMemberDetail" + i + "'";
       
     if (index != i && members[i].expanded) 
@@ -84,7 +84,7 @@ function renderMembers(index) {
       content = content + " style='display:none'>";
    
     if (members[i].dob != undefined && members[i].dob.length > 0)
-      content = content + "<label>Date of Birth:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].dob + "</text></br>";
+      content = content + "<label>Date of Birth:&nbsp;&nbsp;&nbsp;</label><text>" + formatDate(members[i].dob) + "</text></br>";
     
     if (members[i].gender != undefined && members[i].gender.length > 0) {
       content = content + "<label>Gender:&nbsp;&nbsp;&nbsp;</label><text>";
@@ -111,6 +111,9 @@ function renderMembers(index) {
     
     if (members[i].district != undefined && members[i].district.length > 0)
       content = content + "<label>District:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].district + "</text><br/>";
+    
+    if (members[i].most_recent_vote != undefined && members[i].most_recent_vote.length > 0)
+      content = content + "<label>Most Recent Vote:&nbsp;&nbsp;&nbsp;</label><text>" + formatDate(members[i].most_recent_vote) + "</text><br/>";
     
     content = content + "<br/>";
     
@@ -152,6 +155,7 @@ function btnMemberOnClick(i) {
         members[i].twitter = data["results"][0]["twitter_account"];
         members[i].facebook = data["results"][0]["facebook_account"];
         members[i].youtube = data["results"][0]["youtube_account"];
+        members[i].most_recent_vote = data["results"][0]["most_recent_vote"];
         members[i].loaded = true;
         
         if (members[i].expanded)
@@ -180,5 +184,118 @@ function btnMemberOnClick(i) {
       $("#spnMember" + i).attr("class", 'glyphicon glyphicon-collapse-down');
       $("#divMemberDetail" + i).slideDown("slow");
     }
+  }
+}
+
+function btnSearchOnClick() {
+  store.set("state", $("#cboState").val());
+  store.set("chamber", $("#cboChamber").val());
+  store.set("district", $("#cboDistrict").val());   
+}
+
+function formatDate(date) {
+  var arrDate = date.split("-");
+  return arrDate[1] + "/" + arrDate[2] + "/" + arrDate[0];
+}
+
+function cboStateOnChange() {
+  var count = 0;
+  
+  if ($("#cboState").val().length > 0) {
+    $("#cboDistrict").find("option").remove();
+    $("#cboDistrict").append($("<option>", {
+      value: "",
+      text: ""
+    }));
+    
+    switch ($("#cboState").val()) {
+      case "AL": count = 7; break;
+      case "AK": count = 1; break; 
+      case "AZ": count = 9; break; 
+      case "AR": count = 4; break; 
+      case "CA": count = 53; break; 
+      case "CO": count = 7; break; 
+      case "CT": count = 5; break; 
+      case "DE": count = 1; break; 
+      case "FL": count = 27; break; 
+      case "GA": count = 14; break; 
+      case "HI": count = 2; break; 
+      case "ID": count = 2; break; 
+      case "IL": count = 18; break; 
+      case "IN": count = 9; break; 
+      case "IA": count = 4; break; 
+      case "KS": count = 4; break; 
+      case "KY": count = 6; break; 
+      case "LA": count = 6; break; 
+      case "ME": count = 2; break; 
+      case "MD": count = 8; break; 
+      case "MA": count = 9; break; 
+      case "MI": count = 14; break; 
+      case "MN": count = 8; break; 
+      case "MS": count = 4; break; 
+      case "MO": count = 8; break; 
+      case "MT": count = 1; break; 
+      case "NE": count = 3; break;
+      case "NV": count = 4; break;
+      case "NH": count = 2; break;
+      case "NJ": count = 12; break;
+      case "NM": count = 3; break;
+      case "NY": count = 27; break;
+      case "NC": count = 13; break;
+      case "ND": count = 1; break;
+      case "OH": count = 16; break;
+      case "OK": count = 5; break;
+      case "OR": count = 5; break;
+      case "PA": count = 18; break;
+      case "RI": count = 2; break;
+      case "SC": count = 7; break;
+      case "SD": count = 1; break;
+      case "TN": count = 9; break;
+      case "TX": count = 36; break;
+      case "UT": count = 4; break;
+      case "VT": count = 1; break;
+      case "VA": count = 11; break;
+      case "WA": count = 10; break;
+      case "WV": count = 3; break;
+      case "WI": count = 8; break;
+      case "WY": count = 1; break;
+    }
+  }
+  
+  for (var i = 1; i <= count; i ++) {    
+    $("#cboDistrict").append($("<option>", {
+      value: i,
+      text: i
+    }));
+  }
+
+  enableDisableFields();
+}
+
+function cboChamberOnChange() {
+  enableDisableFields();
+}
+
+function cboDistrictOnChange() {
+  enableDisableFields();
+}
+
+function enableDisableFields() {
+  if ($("#cboState").val().length > 0 && $("#cboChamber").val() != "Senate")
+    $("#cboDistrict").prop("disabled", false);
+  else {
+    $("#cboDistrict").prop("disabled", true);
+    $("#cboDistrict").val("");
+  }
+  
+  $("#btnSearch").attr("disabled", true);
+  
+  if ($("#cboState").val().length > 0 && $("#cboChamber").val().length > 0) { 
+    if ($("#cboChamber").val() == "House") {
+      if ($("#cboDistrict").val().length > 0)
+        $("#btnSearch").attr("disabled", false);
+    }
+    else
+      $("#btnSearch").attr("disabled", false);
   }
 }
