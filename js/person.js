@@ -1,10 +1,10 @@
 // API keys
 var auth = {
   version: "v3",
-  article_search_api_key: "7089b4dbf0dbfe27a732e031b0d1c4db:2:70134955",
-  campaign_finance_api_key: "a0010dc488c36308d3fef83ccfa40e0e:11:70134955",
-  congress_api_key: "8572e441d94d60fe07cab9d6baad0af8:16:70134955",
-  times_newswire_api_key: "2aec92c5eb73d8c60d8b594c39a4867e:1:70134955",
+  article_search_api_key: "",
+  campaign_finance_api_key: "",
+  congress_api_key: "",
+  times_newswire_api_key: "",
 }
 
 var members = [];
@@ -14,6 +14,53 @@ $(document).ready(function() {
 });
 
 $(document).keydown(function(key) {
+  if (key.altKey) {
+    if ($("body").hasClass("modal-open")) {
+      switch (key.keyCode) {
+        case 83:
+          if (!$("#btnSearch").attr("disabled"))
+            $("#btnSearch").get(0).click();        
+          break;
+        case 67:
+          $("#btnClose").trigger("click");
+          $("#btnHelpClose").trigger("click");
+          break;
+      }
+    }
+    else {
+      switch(key.keyCode) {    
+        case 83:
+          $("#btnSearchModal").trigger("click");          
+          break;
+        case 70:
+          $("#dboFavorite").trigger("click");
+          key.preventDefault();
+          break;
+        case 72:
+          if (!$("#btnSearch").attr("disabled"))
+            $("#btnHelpModal").get(0).click();
+          break;
+      }
+    }
+  }
+  else {
+    switch(key.keyCode) {    
+      case 13:
+        if ($("body").hasClass("modal-open")) {
+          $("#btnSearch").get(0).click();
+          key.preventDefault();
+        }
+        break;
+        
+      case 27:
+        if ($("body").hasClass("modal-open")) {
+          $("#btnClose").trigger("click");
+          $("#btnHelpClose").trigger("click");
+          key.preventDefault();
+        }
+        break;
+    }
+  }
 });
 
 function btnShowSearchOnClick() {
@@ -60,7 +107,7 @@ function getMemberBio() {
       renderMembers(-1);      
     },
     error: function() {
-      $("#divBody").empty().append("2 A problem occurred during loads. Please try again a few seconds later.");
+      $("#divBody").empty().append("A problem occurred when loading data. Please try again a few seconds later.");
     },
   });
 }
@@ -169,7 +216,7 @@ function btnMemberOnClick(i) {
         $("#divMemberDetail" + i).slideDown("slow");
       },   
       error: function() {
-        $("#divBody").empty().append("1 A problem occurred during loads. Please try again a few seconds later.");
+        $("#divBody").empty().append("A problem occurred when loading data. Please try again a few seconds later.");
       },
     });
   }

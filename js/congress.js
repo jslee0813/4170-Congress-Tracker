@@ -1,8 +1,10 @@
 // API keys
 var auth = {
-    version: "",
-    community_api_key: "",
-    article_search_api_key: "",
+  version: "v3",
+  article_search_api_key: "",
+  campaign_finance_api_key: "",
+  congress_api_key: "",
+  times_newswire_api_key: "",
 }
 
 $(document).ready(function() {
@@ -13,6 +15,53 @@ $(document).ready(function() {
 });
 
 $(document).keydown(function(key) {
+  if (key.altKey) {
+    if ($("body").hasClass("modal-open")) {
+      switch (key.keyCode) {
+        case 83:
+          if (!$("#btnSearch").attr("disabled"))
+            $("#btnSearch").get(0).click();        
+          break;
+        case 67:
+          $("#btnClose").trigger("click");
+          $("#btnHelpClose").trigger("click");
+          break;
+      }
+    }
+    else {
+      switch(key.keyCode) {    
+        case 83:
+          $("#btnSearchModal").trigger("click");          
+          break;
+        case 70:
+          $("#dboFavorite").trigger("click");
+          key.preventDefault();
+          break;
+        case 72:
+          if (!$("#btnSearch").attr("disabled"))
+            $("#btnHelpModal").get(0).click();
+          break;
+      }
+    }
+  }
+  else {
+    switch(key.keyCode) {    
+      case 13:
+        if ($("body").hasClass("modal-open")) {
+          $("#btnSearch").get(0).click();
+          key.preventDefault();
+        }
+        break;
+        
+      case 27:
+        if ($("body").hasClass("modal-open")) {
+          $("#btnClose").trigger("click");
+          $("#btnHelpClose").trigger("click");
+          key.preventDefault();
+        }
+        break;
+    }
+  }
 });
 
 function btnSearchOnClick() {
