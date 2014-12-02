@@ -38,8 +38,7 @@ $(document).keydown(function(key) {
           key.preventDefault();
           break;
         case 72:
-          if (!$("#btnSearch").attr("disabled"))
-            $("#btnHelpModal").get(0).click();
+          $("#btnHelpModal").get(0).click();
           break;
       }
     }
