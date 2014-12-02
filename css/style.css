@@ -19,6 +19,14 @@
   padding-bottom: 5px;
 }
 
+.articleDetail{
+  font-size: small;
+}
+
+.snippet{
+  font-size: large;
+}
+
 label {
   font-size: 14px;
   font-weight: bold;

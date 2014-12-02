@@ -12,6 +12,8 @@ $(document).ready(function() {
     alert('Local storage is not supported by your browser. Please disable "Private Mode", or upgrade to a modern browser.')
     return
   }
+  displayArticles();
+   
 });
 
 $(document).keydown(function(key) {
@@ -63,6 +65,38 @@ $(document).keydown(function(key) {
     }
   }
 });
+
+//Article display code --Connor
+function displayArticles(){
+  
+  $('#articleSection').empty();
+
+  $.ajax({
+      url: "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=congress&sort=newest&api-key=f9fc1ffe76df50642e1e19b658fcc76a:18:70213601",
+      type: "get",
+      dataType: "json",
+      cache: true,
+      success:function(json){
+
+          json;
+          var articleArray = json.response.docs;
+          //Right now I am just showing 5 articles, can be increased easily
+          //this is for random "congress" articles, assumming no favorites
+          for(var i = 0; i < 5; i++)
+          {
+              $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray[i].web_url + "\" target=\"_blank\">" 
+                                          + articleArray[i].headline.main + "</a><h2><p class=\"articleDetail\">"
+                                          + articleArray[i].byline.original + "<br>" 
+                                          + articleArray[i].pub_date + "<br></p><p class=\"snippet\">" 
+                                          + articleArray[i].snippet + "</p></div>");
+          }
+
+      },
+      error:function(){
+          alert("Error")
+      },
+    });
+}
 
 function btnSearchOnClick() {
   store.set("state", $("#cboState").val());

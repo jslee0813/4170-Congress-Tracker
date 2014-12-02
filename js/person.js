@@ -5,12 +5,14 @@ var auth = {
   campaign_finance_api_key: "",
   congress_api_key: "",
   times_newswire_api_key: "",
+  article_search_api_key: "f9fc1ffe76df50642e1e19b658fcc76a:18:70213601"
 }
 
 var members = [];
 
 $(document).ready(function() {
   getMemberBio();
+
 });
 
 $(document).keydown(function(key) {
@@ -63,6 +65,106 @@ $(document).keydown(function(key) {
   }
 });
 
+//Article display code --Connor
+function displayArticles(){
+  
+  $('#articleSection').empty();
+
+  var url1;
+  var url2;
+  var articleArray1;
+  var articleArray2;
+  var senatePage;
+  var alternate;
+  var memberName = members[0].name;
+  var pos = memberName.search(" ");
+  var fName = memberName.slice(0, pos);
+  var lName = memberName.slice(pos + 1, memberName.length);
+  
+  url1 = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + fName + "+" + lName + "&sort=newest&api-key=" + auth.article_search_api_key;
+  if(members.length > 1)
+  {
+      memberName = members[1].name;
+      pos = memberName.search(" ");
+      fName = memberName.slice(0, pos);
+      lName = memberName.slice(pos + 1, memberName.length);
+      
+      url2 = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + fName + "+" + lName + "&sort=newest&api-key=" + auth.article_search_api_key;
+      senatePage = true;
+  }
+  
+  //first article search, done whether there are two members on page or not.
+  $.ajax({
+      url: url1,
+      type: "get",
+      dataType: "json",
+      cache: true,
+      success:function(json){
+
+          json;
+          articleArray1 = json.response.docs;
+          
+          //If the page has two members, then only 3 articles for the first member will be displayed in this ajax call
+          if(senatePage)
+          {
+              for(var i = 0; i < 3; i++)
+              {
+                  $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray1[i].web_url + "\" target=\"_blank\">" 
+                                              + articleArray1[i].headline.main + "</a><h2><p class=\"articleDetail\">"
+                                              + articleArray1[i].byline.original + "<br>" 
+                                              + articleArray1[i].pub_date + "<br></p><p class=\"snippet\">" 
+                                              + articleArray1[i].snippet + "</p></div>");
+              }   
+          }
+          else
+          {
+              for(var i = 0; i < 5; i++)
+              { 
+                  $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray1[i].web_url + "\" target=\"_blank\">" 
+                                              + articleArray1[i].headline.main + "</a><h2><p class=\"articleDetail\">"
+                                              + articleArray1[i].byline.original + "<br>" 
+                                              + articleArray1[i].pub_date + "<br></p><p class=\"snippet\">" 
+                                              + articleArray1[i].snippet + "</p></div>");
+              }
+          }
+      },
+      error:function(){
+          alert("Error")
+      },
+  });
+
+  //If it is a senate page then another search for articles will be done for the other senator on the page
+  //The articles are appended to the bottom of the list of articles on screen. This functionality can be
+  //changed, but I did it this way because of the asynchronous behavior of the ajax calls
+  if(senatePage)
+  {
+      $.ajax({
+          url: url2,
+          type: "get",
+          dataType: "json",
+          cache: true,
+          success:function(json){
+
+              json;
+              articleArray2 = json.response.docs;
+   
+              for(var i = 0; i < 3; i++)
+              {
+                  $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray2[i].web_url + "\" target=\"_blank\">" 
+                                              + articleArray2[i].headline.main + "</a><h2><p class=\"articleDetail\">"
+                                              + articleArray2[i].byline.original + "<br>" 
+                                              + articleArray2[i].pub_date + "<br></p><p class=\"snippet\">" 
+                                              + articleArray2[i].snippet + "</p></div>");
+              }
+          
+          },
+          error:function(){
+              alert("Error")
+          },
+      });
+  }
+}
+
 function btnShowSearchOnClick() {
   $("#divSearch").slideDown("slow");
 }
@@ -104,6 +206,7 @@ function getMemberBio() {
         members[i] = member;        
       });
       
+      displayArticles();
       renderMembers(-1);      
     },
     error: function() {
