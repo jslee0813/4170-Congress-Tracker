@@ -1,6 +1,6 @@
 // API keys
 var auth = {
-  version: "",
+  version: "v3",
   campaign_finance_api_key: "",
   congress_api_key: "",
   times_newswire_api_key: "",
@@ -197,6 +197,7 @@ function getMemberBio() {
           gender: result["gender"],
           party: result["party"],
           district: result["district"],
+          next_election: result["next_election"],
           expanded: false,
           loaded: false,
           favorite: false,
@@ -261,8 +262,11 @@ function renderMembers(index) {
     if (members[i].district != undefined && members[i].district.length > 0)
       content = content + "<label>District:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].district + "</text><br/>";
     
-    if (members[i].most_recent_vote != undefined && members[i].most_recent_vote.length > 0)
-      content = content + "<label>Most Recent Vote:&nbsp;&nbsp;&nbsp;</label><text>" + formatDate(members[i].most_recent_vote) + "</text><br/>";
+    //if (members[i].most_recent_vote != undefined && members[i].most_recent_vote.length > 0)
+    //  content = content + "<label>Most Recent Vote:&nbsp;&nbsp;&nbsp;</label><text>" + formatDate(members[i].most_recent_vote) + "</text><br/>";
+    
+    if (members[i].next_election != undefined && members[i].next_election.length > 0)
+      content = content + "<label>Next Election Year:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].next_election + "</text><br/>";
     
     content = content + "<br/>";
     

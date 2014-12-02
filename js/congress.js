@@ -1,6 +1,6 @@
 // API keys
 var auth = {
-  version: "",
+  version: "v3",
   campaign_finance_api_key: "",
   congress_api_key: "",
   times_newswire_api_key: "",
