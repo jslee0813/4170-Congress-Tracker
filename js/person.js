@@ -1,11 +1,10 @@
 // API keys
 var auth = {
   version: "v3",
-  article_search_api_key: "",
-  campaign_finance_api_key: "",
-  congress_api_key: "",
-  times_newswire_api_key: "",
-  article_search_api_key: "f9fc1ffe76df50642e1e19b658fcc76a:18:70213601"
+  campaign_finance_api_key: "a0010dc488c36308d3fef83ccfa40e0e:11:70134955",
+  congress_api_key: "8572e441d94d60fe07cab9d6baad0af8:16:70134955",
+  times_newswire_api_key: "2aec92c5eb73d8c60d8b594c39a4867e:1:70134955",
+  article_search_api_key: "6eb9ae4b8e9a5a5a14339da9b7ef8bea:5:70134955"
 }
 
 var members = [];

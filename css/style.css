@@ -1,13 +1,13 @@
 .democrat {
   border-radius: 5px;
-  border: 1px solid blue;  
+  border: 3px solid blue;  
   padding-top: 10px;
   padding-bottom: 5px;
 }
 
 .republican {
   border-radius: 5px;
-  border: 1px solid red; 
+  border: 3px solid red; 
   padding-top: 10px;
   padding-bottom: 5px;
 }
