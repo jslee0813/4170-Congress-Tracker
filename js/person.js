@@ -63,6 +63,92 @@ $(document).keydown(function(key) {
   }
 });
 
+// Campaign Finance - Jen 
+// convert integer value into $xxx,xxx,xxx.xx format
+function intToDollar(num) {
+    return "$" + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+// get campaign finance details by member 
+function getCampaignFinance(member) {
+  fec_id = ""
+
+  name = member.name 
+  first_name = name.split(" ")[0].toUpperCase()
+  last_name = name.split(" ")[1].toUpperCase()
+
+  // to calculate the year that the member was elected, find the next election year possible and subtract 6 for Senate
+  // if House, leave as 2014, all House members were elected/re-elected in 2014
+  year = member.next_election
+
+  // set district for senate to 1, NYT API has bug that requires district for some Senate members 
+  if (member.chamber == "senate") 
+  {
+    member.district = 1
+    year = year - 6
+  }
+  else
+  {
+    year = 2014
+  }
+  $.ajax
+  ({
+    url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + year + "/seats/" + member.state + "/" + member.chamber + "/" + member.district + ".json?api-key=" + auth.campaign_finance_api_key,
+    type: "GET", 
+    dataType: "jsonp", 
+    cache: true, 
+    success: function(data)
+    {
+      $.each(data["results"], function(i, result) 
+      {
+        candidate_name = result['candidate']['name'].split(", ")
+        if (candidate_name.length > 1)
+        {
+          candidate_last_name = candidate_name[0].toUpperCase()
+          candidate_first_name = candidate_name[1].split(" ")[0].toUpperCase()
+        }
+        else
+        {
+          candidate_last_name = candidate_name[0].toUpperCase()
+          candidate_first_name = ""
+        }
+
+        if (candidate_last_name == last_name && candidate_first_name == first_name)
+        {
+          fec_id = result['candidate']['id']
+          $.ajax
+          ({
+            url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + year + "/candidates/" + fec_id + ".json?api-key=" + auth.campaign_finance_api_key, 
+            type: "GET", 
+            dataType: "jsonp",
+            cache: true, 
+            success: function(data)
+            {
+              response = data['results'][0]
+              member.financial_campaign_cycle = year
+              member.fec_url = response['fec_uri']
+              member.total_contributions = intToDollar(response['total_contributions'])
+              member.total_disbursements = intToDollar(response['total_disbursements'])
+              member.total_from_individuals = intToDollar(response['total_from_individuals'])
+              member.total_from_pacs = intToDollar(response['total_from_pacs'])
+              member.total_receipts = intToDollar(response['total_receipts'])
+              member.total_refunds = intToDollar(response['total_refunds'])
+            },
+            error: function(error){
+              console.log(error)
+            }
+          })
+        }
+      })
+    }, 
+    error: function(error)
+    {
+      console.log(error)
+    }
+  })
+}
+
+
 //Article display code --Connor
 function displayArticles(){
   
@@ -195,6 +281,8 @@ function getMemberBio() {
           role: result["role"],
           gender: result["gender"],
           party: result["party"],
+          state: state, 
+          chamber: chamber,
           district: result["district"],
           next_election: result["next_election"],
           expanded: false,
@@ -314,8 +402,12 @@ function btnMemberOnClick(i) {
           members[i].expanded = false;
         else
           members[i].expanded = true;
-          
+         
+        getCampaignFinance(members[i]);   
         renderMembers(i);
+        // uncomment the console.log(members[i]) to see campaign finance being logged to console
+        // will update it to index.html tomorrow
+        //console.log(members[i])
         
         $("#spnMember" + i).attr("class", 'glyphicon glyphicon-collapse-down');
         $("#divMemberDetail" + i).slideDown("slow");
