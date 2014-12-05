@@ -34,7 +34,7 @@
               </ul>
             </li>            
             <li>
-              <a data-toggle="modal" href="#mdlHelp" id="btnHelpModal" onclick="btnHelpModalOnClick()" title="click to see the help document"><u>H</u>elp</a>
+              <a data-toggle="modal" href="#mdlHelp" id="btnHelpModal" onclick="btnHelpModalOnClick()" title="Click to see the help document"><u>H</u>elp</a>
             </li>            
           </ul>
         </div>
@@ -147,12 +147,32 @@
         <div class="modal-content">
           <form class="form-horizontal">
             <div class="modal-header">
-              <p><b>Help</b></p>
+              <a class="btn btn-default pull-right" data-dismiss="modal" id="btnHelpClose">X</a>
+              <h2>Help</h2>
             </div>
             <div id="divHelpModalBody" style="padding:30px">
-              <h4>How to search,</h4>
-              <p>Click on the Search link or type the shortcut, Alt + S, to launch the Search dialog. Pick the State, Chamber, and District that you want to search for the congress members. Click on the Search button or type the shortcut, Alt + S. The system will find the congress memebers for your search criteria and show the results on the result page. Thd District field is only required for House of Representative. On the Result pages, two Senators for the State would be rendered and one House of Representative for the State and Distrit would be rendered. The color of the border will be red or blue based on the member's role. The color of red represents the republican and the color of red represents the democrat. If the homepage, twitter accounts, facebook accounts, or youtube accounts are available for a congress member, the corresponding icons would be shown, so the user can navigate to the extra pages.</p>
+              <h4 id="help_search">Search for a Member of Congress:</h4>
+              <p>Click on the Search link at the top right of the screen (shortcut: Alt + S), to launch the Search dialog. Pick the State and Chamber from the drop down menu. If looking for a member of the House of Representatives, choose the District from the drop down menu. Click on the Search button (shortcut: Alt + S). If looking for a member of the Senate, you will then be asked to choose one of the two Senators from the chosen state. The system will find the congress member that satisfies your search criteria and show the results on a new page. The color scheme of this page corresponds to the party of the Member of Congress: red for Republican, and blue for Democrat.</p>
               <br/>
+
+              <h4 id="help_bio">Find a Member of Congress's biographical information:</h4>
+              <p>TODO: <br>Navigate to the page of the Member of Congress whose voting record you wish to see (<a href="#help_search">Search for a Member of Congress</a>).  <br><br>
+If the New York Times API provides the homepage, twitter accounts, facebook accounts, or youtube accounts for the Member of Congress then the corresponding icons will be shown, so the user can navigate to any of these pages.
+              </p>
+              <br/>
+
+              <h4 id="help_voting">Find a Member of Congress's voting record:</h4>
+              <p>Navigate to the page of the Member of Congress whose voting record you wish to see (<a href="#help_search">Search for a Member of Congress</a>).  On the right side of the results page is a colored box labelled  <span style='font-size:16px'>Record</span>. Click on the button with the blue triangle (<button id='btnVote' style='outline:0' class='btn btn-link btn-xs'><span id='spnVote' class='glyphicon glyphicon-expand' aria-hidden='true' style='font-size:18px'></span></button>) that is to the left of this label to show the voting record and number of bills for the Member of Congress. These statistics are broken down by the session of Congress. For example, the label <label>113 House</label> specifies the voting and bill information for the Member of Congress during the 113th United States Congress in the House of Representatives. To minimize this information, click on the button with the blue triangle (<button id='btnVote' style='outline:0' class='btn btn-link btn-xs'><span id='spnVote' class='glyphicon glyphicon-collapse-down' aria-hidden='true' style='font-size:16px'></span></button>) that is to the left of the label <span style='font-size:18px'>Record</span>.</p>
+              <br/>
+
+              <h4 id="help_finance">Find informatation about a Member of Congress's campaign finances:</h4>
+              <p>TODO</p>
+              <br/>
+
+              <h4 id="help_favorite">Add a Member of Congress to your favorites:</h4>
+              <p>TODO</p>
+              <br/>
+
             <div class="modal-footer">
               <a class="btn btn-default" data-dismiss="modal" id="btnHelpClose"><u>C</u>lose</a>
             </div>

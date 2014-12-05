@@ -8,10 +8,10 @@ var auth = {
 }
 
 var members = [];
+var member_roles = [];
 
 $(document).ready(function() {
   getMemberBio();
-
 });
 
 $(document).keydown(function(key) {
@@ -293,6 +293,7 @@ function getMemberBio() {
         members[i] = member;        
       });
       
+      getMemberBills(members[0].id);
       displayArticles();
       renderMembers(-1);      
     },
@@ -382,6 +383,113 @@ function renderMembers(index) {
   }  
 }
 
+function getMemberBills(member_id) {
+  $.ajax({
+    url: "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/members/" + member_id + ".json?api-key=" + auth.congress_api_key,
+    type: "GET", 
+    dataType: "jsonp", 
+    cache: true, 
+    success: function(data) {
+      var roles = [];
+      $.each(data.results[0]["roles"], function(i, role) {
+        member_role = {
+          congress: role["congress"],
+          chamber: role["chamber"],
+          bills_sponsored: role["bills_sponsored"],
+          bills_cosponsored: role["bills_cosponsored"],
+          missed_votes_pct: role["missed_votes_pct"],
+          votes_with_party_pct: role["votes_with_party_pct"]
+        };
+        roles[i] = member_role;
+      });
+
+      member_roles = {
+        expanded: false,
+        loaded: false,
+        most_recent_vote: data.results[0].most_recent_vote,
+        roles: roles
+      };
+
+      renderMemberVotes(member_roles);
+    },
+    error: function() {
+      // TODO: Not sure yet what makes sense here
+      alert("getMemberVotes error");
+    }
+  });
+}
+
+function renderMemberVotes(member_roles){
+
+  var exp_or_col = "expand";
+  var show_content = " style='display:none'>";
+  if (member_roles.expanded) {
+    show_content = ">";
+    exp_or_col = "collapse-down"
+  }
+
+  var content = "<p><button id='btnVote' style='outline:0' class='btn btn-link btn-xs' onclick='btnVoteOnClick()'> \
+                <span id='spnVote' class='glyphicon glyphicon-"+ exp_or_col + "' aria-hidden='true' style='font-size:18px'></span> \
+                </button>&nbsp;&nbsp;<span style='font-size:18px'>Record</span></p>\
+                <div id='divVoteDetail'" + show_content;
+
+    if (member_roles.most_recent_vote != undefined && member_roles.most_recent_vote.length > 0) {
+      content += "<label>Most Recent Vote:&nbsp;&nbsp;&nbsp;</label><text>&nbsp;&nbsp;&nbsp;" + member_roles.most_recent_vote+ "</text></br>";
+    }
+
+  $.each(member_roles.roles, function(i, role) {
+
+    content += "<label>";
+    if (role.congress != undefined && role.congress.length > 0) {
+      content += role.congress + "  ";
+    } 
+
+    if (role.chamber != undefined && role.chamber.length > 0) {
+      content += role.chamber 
+    } else {
+      content += " Session ";
+    }
+    content += "&nbsp;&nbsp;&nbsp;</label></br>";
+
+    if (role.bills_sponsored != undefined && role.bills_sponsored.length > 0) {
+      content += "<text>&nbsp;&nbsp;&nbsp;Bills Sponsored:&nbsp;&nbsp;&nbsp;</text>" + role.bills_sponsored + "</br>";
+    }
+
+    if (role.bills_cosponsored != undefined && role.bills_cosponsored.length > 0) {
+      content += "<text>&nbsp;&nbsp;&nbsp;Bills Co-sponsored:&nbsp;&nbsp;&nbsp;</text>" + role.bills_cosponsored + "</br>";
+    }
+
+    if (role.missed_votes_pct != undefined && role.missed_votes_pct.length > 0) {
+      content += "<text>&nbsp;&nbsp;&nbsp;Missed Votes:&nbsp;&nbsp;&nbsp;</text>" + role.missed_votes_pct + "%</br>";
+    }
+
+    if (role.votes_with_party_pct != undefined && role.votes_with_party_pct.length > 0) {
+      content += "<text>&nbsp;&nbsp;&nbsp;Votes with Party:&nbsp;&nbsp;&nbsp;</text>" + role.votes_with_party_pct + "%</br>";
+    }
+  });
+
+  $("#divMember1").append(content);
+  if (members[0].party == "D")
+    $("#divMember1").attr("class", "col-md-5 democrat");
+  else if (members[0].party == "R")  
+    $("#divMember1").attr("class", "col-md-5 republican");
+  else
+    $("#divMember1").attr("class", "col-md-5 default");
+}
+
+function btnVoteOnClick() {
+  if (!member_roles.expanded) {
+    member_roles.expanded = true;
+    $("#spnVote").attr("class", 'glyphicon glyphicon-collapse-down');
+    $("#divVoteDetail").slideDown("slow");
+  }
+  else {
+    member_roles.expanded = false;
+    $("#spnVote").attr("class", 'glyphicon glyphicon-expand');
+    $("#divVoteDetail").slideUp("slow");
+  }
+}
+ 
 function btnMemberOnClick(i) {
   if (!members[i].loaded) {
     $.ajax({          
