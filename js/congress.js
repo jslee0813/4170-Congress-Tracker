@@ -76,20 +76,22 @@ function displayArticles(){
       dataType: "json",
       cache: true,
       success:function(json){
-
-          json;
           var articleArray = json.response.docs;
           //Right now I am just showing 5 articles, can be increased easily
           //this is for random "congress" articles, assumming no favorites
           for(var i = 0; i < 5; i++)
           {
+              var date_time = articleArray[i].pub_date.split(/Z/)[0].split(/T/);
+              var byline = "";
+              if (articleArray[i].byline.length != 0) {
+                byline = articleArray[i].byline.original + "<br>";
+              }
               $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray[i].web_url + "\" target=\"_blank\">" 
                                           + articleArray[i].headline.main + "</a><h2><p class=\"articleDetail\">"
-                                          + articleArray[i].byline.original + "<br>" 
-                                          + articleArray[i].pub_date + "<br></p><p class=\"snippet\">" 
+                                          + byline
+                                          + date_time[0] + " at " + date_time[1] + "<br></p><p class=\"snippet\">" 
                                           + articleArray[i].snippet + "</p></div>");
           }
-
       },
       error:function(){
           alert("Error")
