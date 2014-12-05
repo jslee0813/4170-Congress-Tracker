@@ -1,10 +1,10 @@
 // API keys
 var auth = {
   version: "v3",
-  campaign_finance_api_key: "",
-  congress_api_key: "",
-  times_newswire_api_key: "",
-  article_search_api_key: ""
+  campaign_finance_api_key: "69769739adad5ec9e5044090d867a62e:14:70154539",
+  congress_api_key: "96625a843db6b50dcdb259b94e281246:8:70154539",
+  times_newswire_api_key: "4f54e9027e2dfda5b275fdb8ddd93ba4:18:70154539",
+  article_search_api_key: "1e94e0ac552a0041906f50590784f934:9:70154539"
 }
 
 var members = [];
@@ -451,20 +451,29 @@ function renderMemberVotes(member_roles){
     }
     content += "&nbsp;&nbsp;&nbsp;</label></br>";
 
+    var info_exists = false;
     if (role.bills_sponsored != undefined && role.bills_sponsored.length > 0) {
       content += "<text>&nbsp;&nbsp;&nbsp;Bills Sponsored:&nbsp;&nbsp;&nbsp;</text>" + role.bills_sponsored + "</br>";
+      info_exists = true;
     }
 
     if (role.bills_cosponsored != undefined && role.bills_cosponsored.length > 0) {
       content += "<text>&nbsp;&nbsp;&nbsp;Bills Co-sponsored:&nbsp;&nbsp;&nbsp;</text>" + role.bills_cosponsored + "</br>";
+      info_exists = true;
     }
 
     if (role.missed_votes_pct != undefined && role.missed_votes_pct.length > 0) {
       content += "<text>&nbsp;&nbsp;&nbsp;Missed Votes:&nbsp;&nbsp;&nbsp;</text>" + role.missed_votes_pct + "%</br>";
+      info_exists = true;
     }
 
     if (role.votes_with_party_pct != undefined && role.votes_with_party_pct.length > 0) {
       content += "<text>&nbsp;&nbsp;&nbsp;Votes with Party:&nbsp;&nbsp;&nbsp;</text>" + role.votes_with_party_pct + "%</br>";
+      info_exists = true;
+    }
+
+    if (info_exists == false) {
+      content += "&nbsp;&nbsp;&nbsp;No Data Available</br>";
     }
   });
 
