@@ -4,7 +4,7 @@ var auth = {
   campaign_finance_api_key: "693917afeaba58fde1552a6732852e9c:18:70213515",
   congress_api_key: "eab06b972a38a20d0e58eb3d8cdc7c58:7:70213515",
   times_newswire_api_key: "79e51b60c583682981c77388db8f55d9:10:70213515",
-  article_search_api_key: "9e9d9f28b5f5b62d79968c128fdf7a66:9:70213515"
+  article_search_api_key: "9e9d9f28b5f5b62d79968c128fdf7a66:9:70213515",
 }
 
 
@@ -101,35 +101,80 @@ function favSelected(name)
 //Article display code --Connor
 function displayArticles(){
   
+  var count = 0;
   $('#articleSection').empty();
 
-  $.ajax({
-      url: "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=congress&sort=newest&api-key=f9fc1ffe76df50642e1e19b658fcc76a:18:70213601",
-      type: "get",
-      dataType: "json",
-      cache: true,
-      success:function(json){
+  var favorites = store.get(favorites);
+
+
+  //Process of iterating through the list of favorites, displaying two relevant articles for each favorite.
+  if(favorites)
+  {
+  	for(var name in favorites)
+  	{
+  		if(favorites.hasOwnProperty(name))
+  		{
+            $.ajax({
+                url: "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + name + "&begin_date=20140101&api-key=" + auth.article_search_api_key,
+      			type: "get",
+      			dataType: "json",
+      			cache: true,
+      			success:function(json){
+          			var articleArray = json.response.docs;
+          		
+          			for(var i = 0; i < 2; i++)
+          			{
+              		    var date_time = articleArray[i].pub_date.split(/Z/)[0].split(/T/);
+              			var byline = "";
+              			if (articleArray[i].byline.length != 0){
+                		    byline = articleArray[i].byline.original + "<br>";
+              		    }
+              		    $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray[i].web_url + "\" target=\"_blank\">" 
+                                          			+ articleArray[i].headline.main + "</a><h2><p class=\"articleDetail\">"
+                                          			+ byline
+                                          			+ date_time[0] + " at " + date_time[1] + "<br></p><p class=\"snippet\">" 
+                                          			+ articleArray[i].snippet + "</p></div>");
+              		    count++;
+          			}
+      			},
+      			error:function(){
+          			alert("Error")
+      			},
+    		});
+        }
+    }
+  }  
+
+  //If less than 10 articles are displayed after working throught the user's favorites, fill the rest of the 10 with congress articles
+  if(count < 10)
+  {
+  	$.ajax({
+        url: "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=congress&begin_date=20140101&api-key=" + auth.article_search_api_key,
+        type: "get",
+        dataType: "json",
+        cache: true,
+        success:function(json){
           var articleArray = json.response.docs;
-          //Right now I am just showing 5 articles, can be increased easily
-          //this is for random "congress" articles, assumming no favorites
-          for(var i = 0; i < 5; i++)
+          
+          for(var i = 0; i < (10 - count); i++)
           {
-              var date_time = articleArray[i].pub_date.split(/Z/)[0].split(/T/);
-              var byline = "";
-              if (articleArray[i].byline.length != 0) {
-                byline = articleArray[i].byline.original + "<br>";
-              }
-              $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray[i].web_url + "\" target=\"_blank\">" 
-                                          + articleArray[i].headline.main + "</a><h2><p class=\"articleDetail\">"
-                                          + byline
-                                          + date_time[0] + " at " + date_time[1] + "<br></p><p class=\"snippet\">" 
-                                          + articleArray[i].snippet + "</p></div>");
+            var date_time = articleArray[i].pub_date.split(/Z/)[0].split(/T/);
+            var byline = "";
+            if (articleArray[i].byline.length != 0) {
+              byline = articleArray[i].byline.original + "<br>";
+            }
+            $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray[i].web_url + "\" target=\"_blank\">" 
+                                        + articleArray[i].headline.main + "</a><h2><p class=\"articleDetail\">"
+                                        + byline
+                                        + date_time[0] + " at " + date_time[1] + "<br></p><p class=\"snippet\">" 
+                                        + articleArray[i].snippet + "</p></div>");
           }
-      },
-      error:function(){
+        },
+        error:function(){
           alert("Error")
-      },
+        },
     });
+  }
 }
 
 function btnSearchOnClick() {

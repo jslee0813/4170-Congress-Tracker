@@ -33,6 +33,15 @@
   padding-left: 20px;
 }
 
+#navBar{
+  margin-bottom: 0px;
+}
+
+#congressImage{
+  width: 100%;
+  height: 300px;
+}
+
 label {
   font-size: 14px;
   font-weight: bold;

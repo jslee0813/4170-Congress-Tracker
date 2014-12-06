@@ -220,7 +220,7 @@ function displayArticles(){
   var fName = memberName.slice(0, pos);
   var lName = memberName.slice(pos + 1, memberName.length);
   
-  url1 = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + fName + "+" + lName + "&sort=newest&api-key=" + auth.article_search_api_key;
+  url1 = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + fName + "+" + lName + "&begin_date=20140101&api-key=" + auth.article_search_api_key;
   if(members.length > 1)
   {
       memberName = members[1].name;
@@ -228,7 +228,7 @@ function displayArticles(){
       fName = memberName.slice(0, pos);
       lName = memberName.slice(pos + 1, memberName.length);
       
-      url2 = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + fName + "+" + lName + "&sort=newest&api-key=" + auth.article_search_api_key;
+      url2 = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + fName + "+" + lName + "&begin_date20140101&api-key=" + auth.article_search_api_key;
       senatePage = true;
   }
   
