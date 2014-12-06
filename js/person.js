@@ -69,38 +69,37 @@ $(document).keydown(function(key) {
 function intToDollar(num) {
     return "$" + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-
 // get campaign finance details by member 
-function getCampaignFinance(member) {
-  fec_id = ""
-
-  name = member.name 
-  first_name = name.split(" ")[0].toUpperCase()
-  last_name = name.split(" ")[1].toUpperCase()
+function getCampaignFinance(i) {
+  name = members[i].name
+  temp_name = name.split(" ")
+  first_name = temp_name[0].toUpperCase()
+  last_name = temp_name[temp_name.length -1].toUpperCase()
 
   // to calculate the year that the member was elected, find the next election year possible and subtract 6 for Senate
   // if House, leave as 2014, all House members were elected/re-elected in 2014
-  year = member.next_election
+  year = members[i].next_election
 
   // set district for senate to 1, NYT API has bug that requires district for some Senate members 
-  if (member.chamber == "senate") 
+  if (members[i].chamber == "senate") 
   {
-    member.district = 1
+    members[i].district = 1
     year = year - 6
   }
   else
   {
     year = 2014
   }
+  members[i].financial_campaign_cycle = year
   $.ajax
   ({
-    url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + year + "/seats/" + member.state + "/" + member.chamber + "/" + member.district + ".json?api-key=" + auth.campaign_finance_api_key,
+    url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + members[i].financial_campaign_cycle + "/seats/" + members[i].state + "/" + members[i].chamber + "/" + members[i].district + ".json?api-key=" + auth.campaign_finance_api_key,
     type: "GET", 
     dataType: "jsonp", 
     cache: true, 
     success: function(data)
     {
-      $.each(data["results"], function(i, result) 
+      $.each(data["results"], function(j, result) 
       {
         candidate_name = result['candidate']['name'].split(", ")
         if (candidate_name.length > 1)
@@ -113,27 +112,25 @@ function getCampaignFinance(member) {
           candidate_last_name = candidate_name[0].toUpperCase()
           candidate_first_name = ""
         }
-
         if (candidate_last_name == last_name && candidate_first_name == first_name)
         {
-          fec_id = result['candidate']['id']
+          members[i].fec_id = result['candidate']['id']
           $.ajax
           ({
-            url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + year + "/candidates/" + fec_id + ".json?api-key=" + auth.campaign_finance_api_key, 
+            url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + members[i].financial_campaign_cycle + "/candidates/" + members[i].fec_id + ".json?api-key=" + auth.campaign_finance_api_key, 
             type: "GET", 
             dataType: "jsonp",
             cache: true, 
             success: function(data)
             {
               response = data['results'][0]
-              member.financial_campaign_cycle = year
-              member.fec_url = response['fec_uri']
-              member.total_contributions = intToDollar(response['total_contributions'])
-              member.total_disbursements = intToDollar(response['total_disbursements'])
-              member.total_from_individuals = intToDollar(response['total_from_individuals'])
-              member.total_from_pacs = intToDollar(response['total_from_pacs'])
-              member.total_receipts = intToDollar(response['total_receipts'])
-              member.total_refunds = intToDollar(response['total_refunds'])
+              members[i].fec_url = response['fec_uri']
+              members[i].total_contributions = intToDollar(response['total_contributions'])
+              members[i].total_disbursements = intToDollar(response['total_disbursements'])
+              members[i].total_from_individuals = intToDollar(response['total_from_individuals'])
+              members[i].total_from_pacs = intToDollar(response['total_from_pacs'])
+              members[i].total_receipts = intToDollar(response['total_receipts'])
+              members[i].total_refunds = intToDollar(response['total_refunds'])
             },
             error: function(error){
               console.log(error)
@@ -339,10 +336,26 @@ function getMemberBio() {
           expanded: false,
           loaded: false,
           favorite: false,
+          fec_id: "",
+          total_contributions: "$872,001",
+          total_disbursements: "$20,638",
+          total_from_individuals: "$459,024",
+          total_from_pacs: "$201,377",
+          total_receipts: "$680,992",
+          total_refunds: "$458,882"
         };
         
         members[i] = member;        
       });
+      if (chamber == "house")
+      {
+        getCampaignFinance(0)
+      }
+      else
+      {
+        getCampaignFinance(0)
+        getCampaignFinance(1)
+      }
       
       getMemberRecord(members[0].id);
       displayBills(members[0].id);
@@ -478,6 +491,24 @@ function renderMembers(index) {
     
     if (members[i].next_election != undefined && members[i].next_election.length > 0)
       content = content + "<label>Next Election Year:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].next_election + "</text><br/>";
+    
+   if (members[i].total_contributions != undefined && members[i].total_contributions.length > 0)
+      content = content + "<label>Total Contributions:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].total_contributions + "</text><br/>";
+
+    if (members[i].total_disbursements != undefined && members[i].total_disbursements.length > 0)
+      content = content + "<label>Total From Individuals:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].total_disbursements + "</text><br/>";
+
+    if (members[i].total_from_individuals != undefined && members[i].total_from_individuals.length > 0)
+      content = content + "<label>Total Disbursements:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].total_from_individuals + "</text><br/>";
+
+    if (members[i].total_from_pacs != undefined && members[i].total_from_pacs.length > 0)
+      content = content + "<label>Total From PACS:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].total_from_pacs + "</text><br/>";
+
+    if (members[i].total_receipts != undefined && members[i].total_receipts.length > 0)
+      content = content + "<label>Total Receipts:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].total_receipts + "</text><br/>";
+
+    if (members[i].total_refunds != undefined && members[i].total_refunds.length > 0)
+      content = content + "<label>Total Refunds:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].total_refunds + "</text><br/>";
     
     content = content + "<br/>";
     
@@ -643,11 +674,7 @@ function btnMemberOnClick(i) {
         else
           members[i].expanded = true;
          
-        getCampaignFinance(members[i]);   
         renderMembers(i);
-        // uncomment the console.log(members[i]) to see campaign finance being logged to console
-        // will update it to index.html tomorrow
-        //console.log(members[i])
         
         $("#spnMember" + i).attr("class", 'glyphicon glyphicon-collapse-down');
         $("#divMemberDetail" + i).slideDown("slow");
