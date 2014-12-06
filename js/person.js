@@ -1,16 +1,17 @@
 // API keys
 var auth = {
   version: "v3",
-  campaign_finance_api_key: "",
-  congress_api_key: "",
-  times_newswire_api_key: "",
-  article_search_api_key: ""
+  campaign_finance_api_key: "693917afeaba58fde1552a6732852e9c:18:70213515",
+  congress_api_key: "eab06b972a38a20d0e58eb3d8cdc7c58:7:70213515",
+  times_newswire_api_key: "79e51b60c583682981c77388db8f55d9:10:70213515",
+  article_search_api_key: "9e9d9f28b5f5b62d79968c128fdf7a66:9:70213515"
 }
 
 var members = [];
 var member_roles = [];
 
 $(document).ready(function() {
+  addFavs();
   getMemberBio();
 });
 
@@ -354,17 +355,88 @@ function getMemberBio() {
   });
 }
 
+function btnFavoriteOnClick(i)
+{
+  var favs = store.get('favorites');
+
+  if(!favs)
+    favs = {};
+  if(favs[members[i].name])
+  {
+    $("#spnFav" + i).attr('class', "glyphicon glyphicon-star-empty star");
+    delete favs[members[i].name];
+  }
+  else
+  {
+    favs[members[i].name] = members[i];
+    $("#spnFav" + i).attr('class', "glyphicon glyphicon-star star");
+  }
+
+  store.set('favorites', favs);
+  addFavs();
+}
+
+function addFavs()
+{
+  var favs = store.get("favorites");
+
+  if(!favs)
+  {
+    favs = {};    
+  }
+  var content = "";
+
+  for(var f in favs)
+  {
+    if(favs.hasOwnProperty(f))
+    {
+      content += "<li><a href='person.html' onclick='favSelected(\"" + f + "\")'>" + f +"</a></li>"
+    }
+  }
+  $('#dboFav').empty().append(content);
+
+}
+function favSelected(name)
+{
+  var favs = store.get("favorites");
+  var member = favs[name];
+  //Todo: set the store valuse used for search and reload the page.
+  store.set("state", member.state);
+  store.set("chamber", member.chamber);
+  store.set("district", member.district);   
+}
+
 function renderMembers(index) {
   for (var i = 0; i < members.length; i++) {
     var content = "<p><button id='btnMember" + i + "' style='outline:0' class='btn btn-link btn-xs' onclick='btnMemberOnClick(" + i + ")'> \
         <span id='spnMember" + i + "' class='glyphicon glyphicon-";
   
+    var favs = store.get("favorites");
+    var tooltip;
+    var glyph;
+    if(favs[members[i].name])
+    {
+      tooltip = "Remove from Favorites";
+      glyph = "glyphicon-star";
+    }
+    else
+    {
+      tooltip = "Add to Favorites"
+      glyph = "glyphicon-star-empty";
+    }
+
+
     if (index != i && members[i].expanded) 
       content = content + "collapse-down";
     else
       content = content + "expand";
     
-    content = content + "' aria-hidden='true' style='font-size:18px'></span></button>&nbsp;&nbsp;<span style='font-size:18px'>" + members[i].name + "</span></p>";
+    content = content + "' aria-hidden='true' style='font-size:18px'></span></button>&nbsp;&nbsp;<span style='font-size:18px'>" + members[i].name + "</span>"
+                          + "<button id='btnFavorite" + i + "' title='" + tooltip + "' style='outline:0' class = 'btn btn-link btn-xs' onclick='btnFavoriteOnClick(" + i + ")'>" 
+                          + "<span id='spnFav" + i + "' class='glyphicon " + glyph + " star' style='font-size:18px'></span></button></p>";
+
+
+
     content = content + "<div id='divMemberDetail" + i + "'";
       
     if (index != i && members[i].expanded) 

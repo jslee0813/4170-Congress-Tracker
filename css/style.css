@@ -22,7 +22,9 @@
 .articleDetail{
   font-size: small;
 }
-
+.star{
+  color: #FFD700;
+}
 .snippet{
   font-size: large;
 }
