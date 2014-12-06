@@ -4,14 +4,16 @@ var auth = {
   campaign_finance_api_key: "",
   congress_api_key: "",
   times_newswire_api_key: "",
-  article_search_api_key: ""
+  article_search_api_key: "",
 }
+
 
 $(document).ready(function() {
   if (!store.enabled) {
     alert('Local storage is not supported by your browser. Please disable "Private Mode", or upgrade to a modern browser.')
     return
   }
+  addFavs();
   displayArticles();
    
 });
@@ -65,38 +67,115 @@ $(document).keydown(function(key) {
   }
 });
 
+
+function addFavs()
+{
+  var favs = store.get("favorites");
+
+  if(!favs)
+  {
+    favs = {};
+    store.set("favorites", favs);    
+  }
+  var content = "";
+
+  for(var f in favs)
+  {
+    if(favs.hasOwnProperty(f))
+    {
+      content += "<li><a href='person.html' onclick='favSelected(\"" + f + "\")'>" + f +"</a></li>"
+    }
+  }
+  $('#dboFav').empty().append(content);
+
+}
+function favSelected(name)
+{
+  var favs = store.get("favorites");
+  var member = favs[name];
+  //Todo: set the store valuse used for search and reload the page.
+  store.set("state", member.state);
+  store.set("chamber", member.chamber);
+  store.set("district", member.district);   
+}
+
 //Article display code --Connor
 function displayArticles(){
   
+  var count = 0;
   $('#articleSection').empty();
 
-  $.ajax({
-      url: "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=congress&sort=newest&api-key=f9fc1ffe76df50642e1e19b658fcc76a:18:70213601",
-      type: "get",
-      dataType: "json",
-      cache: true,
-      success:function(json){
+  var favorites = store.get("favorites");
+
+
+  //Process of iterating through the list of favorites, displaying two relevant articles for each favorite.
+  if(favorites)
+  {
+  	for(var name in favorites)
+  	{
+  		if(favorites.hasOwnProperty(name))
+  		{
+            $.ajax({
+                url: "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + name + "&begin_date=20140101&api-key=" + auth.article_search_api_key,
+      			type: "get",
+      			dataType: "json",
+      			cache: true,
+      			success:function(json){
+          			var articleArray = json.response.docs;
+          		
+          			for(var i = 0; i < 2; i++)
+          			{
+              		    var date_time = articleArray[i].pub_date.split(/Z/)[0].split(/T/);
+              			var byline = "";
+              			if (articleArray[i].byline.length != 0){
+                		    byline = articleArray[i].byline.original + "<br>";
+              		    }
+              		    $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray[i].web_url + "\" target=\"_blank\">" 
+                                          			+ articleArray[i].headline.main + "</a><h2><p class=\"articleDetail\">"
+                                          			+ byline
+                                          			+ date_time[0] + " at " + date_time[1] + "<br></p><p class=\"snippet\">" 
+                                          			+ articleArray[i].snippet + "</p></div>");
+              		    count++;
+          			}
+      			},
+      			error:function(){
+              $('#articleSection').empty().show().append("<div class='error'>Error occurred contacting the API. Please reload the page to see news information.</div>");
+      			},
+    		});
+        }
+    }
+  }  
+
+  //If less than 10 articles are displayed after working throught the user's favorites, fill the rest of the 10 with congress articles
+  if(count < 10)
+  {
+  	$.ajax({
+        url: "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=congress&begin_date=20140101&api-key=" + auth.article_search_api_key,
+        type: "get",
+        dataType: "json",
+        cache: true,
+        success:function(json){
           var articleArray = json.response.docs;
-          //Right now I am just showing 5 articles, can be increased easily
-          //this is for random "congress" articles, assumming no favorites
-          for(var i = 0; i < 5; i++)
+          
+          for(var i = 0; i < (10 - count); i++)
           {
-              var date_time = articleArray[i].pub_date.split(/Z/)[0].split(/T/);
-              var byline = "";
-              if (articleArray[i].byline.length != 0) {
-                byline = articleArray[i].byline.original + "<br>";
-              }
-              $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray[i].web_url + "\" target=\"_blank\">" 
-                                          + articleArray[i].headline.main + "</a><h2><p class=\"articleDetail\">"
-                                          + byline
-                                          + date_time[0] + " at " + date_time[1] + "<br></p><p class=\"snippet\">" 
-                                          + articleArray[i].snippet + "</p></div>");
+            var date_time = articleArray[i].pub_date.split(/Z/)[0].split(/T/);
+            var byline = "";
+            if (articleArray[i].byline.length != 0) {
+              byline = articleArray[i].byline.original + "<br>";
+            }
+            $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray[i].web_url + "\" target=\"_blank\">" 
+                                        + articleArray[i].headline.main + "</a><h2><p class=\"articleDetail\">"
+                                        + byline
+                                        + date_time[0] + " at " + date_time[1] + "<br></p><p class=\"snippet\">" 
+                                        + articleArray[i].snippet + "</p></div>");
           }
-      },
-      error:function(){
-          alert("Error")
-      },
+        },
+        error:function(){
+          $('#articleSection').empty().show().append("<div class='error'>Error occurred contacting the API. Please reload the page to see news information.</div>");
+        },
     });
+  }
 }
 
 function btnSearchOnClick() {

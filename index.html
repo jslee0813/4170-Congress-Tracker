@@ -11,7 +11,7 @@
     <link href="css/style.css" rel="stylesheet">
   </head>
   <body>
-    <div class="navbar navbar-inverse" role="navigation">
+    <div class="navbar navbar-inverse" role="navigation" id="navBar">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
@@ -29,8 +29,7 @@
             </li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" id="dboFavorite"><u>F</u>avorites<span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Name 1</a></li>
+              <ul id="dboFav" class="dropdown-menu" role="menu">
               </ul>
             </li>            
             <li>
@@ -42,7 +41,8 @@
     </div>
 
     <div class="panel-body" id="divBody">
-        <div class="page-header" id="articleSectionHead">
+        <img class="img-rounded" id="congressImage" src="img/banner_dome.jpg">
+    <div class="page-header" id="articleSectionHead">
             <h1>In The News</h1>
         </div>
         <div class="row" id="articleSection">
@@ -173,12 +173,17 @@ If the New York Times API provides the homepage, twitter accounts, facebook acco
               <br/>
 
               <h4 id="help_finance">Find informatation about a Member of Congress's campaign finances:</h4>
-              <p>TODO</p>
+              <p>Search for the Congressman or Senator you wish to see (<a href="#help_search">Search for a Member of Congress</a>). Under the individual's biography, you will find financial data about this member of Congress' campaign finances during his or her last campaign. This includes data such as total contributions, disbursements, and receipts from this Congress member's last campaign for election. </p>
               <br/>
 
               <h4 id="help_favorite">Add a Member of Congress to your favorites:</h4>
-              <p>TODO</p>
+              <p>Search for the representative that you want to favorite.  From the persons page click the gold star next to their name. If the star is empty then the Congress person is not favorited.  If the star is full then they are favorited. In this case clicking the star will remove them from favorites.<br><br>
+                To navigate to a favorite repressentatives page click the favorites drop down from the navigation bar.  This will show a list of people you have favorited.  Clicking on a name will navigate to their page.
+              </p>
               <br/>
+
+              <h4 id="help_article">Find news articles on Members of Congress:</h4>
+              <p>On a Congress Member's page (<a href="#help_search">Search for a Member of Congress</a>), you will find relevant news articles on that member from the past year. When you add a member to your favorites (<a href="#help_favorite">Add a Member of Congress to your favorites</a>), you will see news articles relevant to your favorite members on the home page. With no favorites, general news articles pertaining to the U.S. Congress from the past year will appear on the home page.
 
             <div class="modal-footer">
               <a class="btn btn-default" data-dismiss="modal" id="btnHelpClose"><u>C</u>lose</a>
