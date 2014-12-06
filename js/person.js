@@ -1,10 +1,10 @@
 // API keys
 var auth = {
   version: "v3",
-  campaign_finance_api_key: "",
-  congress_api_key: "",
-  times_newswire_api_key: "",
-  article_search_api_key: ""
+  campaign_finance_api_key: "69769739adad5ec9e5044090d867a62e:14:70154539",
+  congress_api_key: "96625a843db6b50dcdb259b94e281246:8:70154539",
+  times_newswire_api_key: "4f54e9027e2dfda5b275fdb8ddd93ba4:18:70154539",
+  article_search_api_key: "1e94e0ac552a0041906f50590784f934:9:70154539"
 }
 
 var members = [];
@@ -12,6 +12,7 @@ var member_roles = [];
 
 $(document).ready(function() {
   getMemberBio();
+
 });
 
 $(document).keydown(function(key) {
@@ -150,6 +151,8 @@ function getCampaignFinance(member) {
   })
 }
 
+// TODO: Make it so you can collapse Bills?
+// Bill display code - Lindsay
 function displayBills(member_id) {
   $('#billSection').empty();
   $.ajax({
@@ -311,6 +314,8 @@ function getMemberBio() {
   var state = store.get("state").toUpperCase();
   var chamber = store.get("chamber").toLowerCase();
   var district = store.get("district").toLowerCase();
+  var senator = store.get("senator").toLowerCase();
+
   var url;
       
   if (chamber == "house")
@@ -324,10 +329,13 @@ function getMemberBio() {
 		dataType: "json",
 		cache: true,
     success: function(data) {
+      console.log(data);
+
       $.each(data["results"], function(i, result) {
+        var full_name = result["name"].split(' ');
         member = {
           id: result["id"],
-          name: result["name"],
+          name: full_name[0] + " " + full_name[full_name.length-1],
           role: result["role"],
           gender: result["gender"],
           party: result["party"],
@@ -340,13 +348,20 @@ function getMemberBio() {
           favorite: false,
         };
         
-        members[i] = member;        
+        if (chamber == 'senate') {
+          if (member.name.toLowerCase() == senator) {
+            members[0] = member;
+            $("#bio_name").text(member.name);
+          }
+        } else {
+          members[0] = member;
+          $("#bio_name").text(member.name);
+        }
       });
-      
-      getMemberRecord(members[0].id);
+
+      getMemberInfo(members[0].id);
       displayBills(members[0].id);
       displayArticles();
-      renderMembers(-1);      
     },
     error: function() {
       $('#divBody').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see information.</div>");
@@ -354,20 +369,21 @@ function getMemberBio() {
   });
 }
 
-function renderMembers(index) {
-  for (var i = 0; i < members.length; i++) {
+function renderMembers() {
+  //for (var i = 0; i < members.length; i++) {
+    var i = 0;
     var content = "<p><button id='btnMember" + i + "' style='outline:0' class='btn btn-link btn-xs' onclick='btnMemberOnClick(" + i + ")'> \
         <span id='spnMember" + i + "' class='glyphicon glyphicon-";
   
-    if (index != i && members[i].expanded) 
+    if (members[i].expanded) 
       content = content + "collapse-down";
     else
       content = content + "expand";
     
-    content = content + "' aria-hidden='true' style='font-size:18px'></span></button>&nbsp;&nbsp;<span style='font-size:18px'>" + members[i].name + "</span></p>";
+    content = content + "' aria-hidden='true' style='font-size:18px'></span></button>&nbsp;&nbsp;<span style='font-size:18px'>Bio</span></p>";
     content = content + "<div id='divMemberDetail" + i + "'";
       
-    if (index != i && members[i].expanded) 
+    if (members[i].expanded) 
       content = content + ">";
     else
       content = content + " style='display:none'>";
@@ -431,19 +447,31 @@ function renderMembers(index) {
       $("#divMember" + i).attr("class", "col-md-5 republican");
     else
       $("#divMember" + i).attr("class", "col-md-5 default");
-  }  
+ // }  
 }
 
-function getMemberRecord(member_id) {
+// Voting record and extra bio information
+function getMemberInfo(member_id) {
   console.log(member_id);
+  var i = 0;
   $.ajax({
     url: "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/members/" + member_id + ".json?api-key=" + auth.congress_api_key,
     type: "GET", 
     dataType: "jsonp", 
     cache: true, 
     success: function(data) {
+      var member = data.results[0];
+
+      members[i].dob = member["date_of_birth"];
+      members[i].url = member["url"];
+      members[i].twitter = member["twitter_account"];
+      members[i].facebook = member["facebook_account"];
+      members[i].youtube = member["youtube_account"];
+      members[i].most_recent_vote = member["most_recent_vote"];
+      members[i].loaded = true;
+
       var roles = [];
-      $.each(data.results[0]["roles"], function(i, role) {
+      $.each(member["roles"], function(i, role) {
         member_role = {
           congress: role["congress"],
           chamber: role["chamber"],
@@ -457,11 +485,20 @@ function getMemberRecord(member_id) {
 
       member_roles = {
         expanded: false,
-        loaded: false,
-        most_recent_vote: data.results[0].most_recent_vote,
+        most_recent_vote: member.most_recent_vote,
         roles: roles
       };
-
+         
+      getCampaignFinance(members[i]);   
+        // renderMembers(i);
+        // uncomment the console.log(members[i]) to see campaign finance being logged to console
+        // will update it to index.html tomorrow
+        //console.log(members[i])
+        
+      $("#spnMember" + i).attr("class", 'glyphicon glyphicon-collapse-down');
+      $("#divMemberDetail" + i).slideDown("slow");
+      
+      renderMembers();      
       renderMemberVotes(member_roles);
     },
     error: function() {
@@ -471,7 +508,6 @@ function getMemberRecord(member_id) {
 }
 
 function renderMemberVotes(member_roles){
-
   var exp_or_col = "expand";
   var show_content = " style='display:none'>";
   if (member_roles.expanded) {
@@ -551,58 +587,23 @@ function btnVoteOnClick() {
 }
  
 function btnMemberOnClick(i) {
-  if (!members[i].loaded) {
-    $.ajax({          
-      url: "http://api.nytimes.com/svc/politics/" + auth.version + "/us/legislative/congress/members/" + members[i].id + ".json?api-key=" + auth.congress_api_key,
-      type: "get",
-      dataType: "json",
-      cache: true,
-      success: function(data) {
-        members[i].dob = data["results"][0]["date_of_birth"];
-        members[i].url = data["results"][0]["url"];
-        members[i].twitter = data["results"][0]["twitter_account"];
-        members[i].facebook = data["results"][0]["facebook_account"];
-        members[i].youtube = data["results"][0]["youtube_account"];
-        members[i].most_recent_vote = data["results"][0]["most_recent_vote"];
-        members[i].loaded = true;
-        
-        if (members[i].expanded)
-          members[i].expanded = false;
-        else
-          members[i].expanded = true;
-         
-        getCampaignFinance(members[i]);   
-        renderMembers(i);
-        // uncomment the console.log(members[i]) to see campaign finance being logged to console
-        // will update it to index.html tomorrow
-        //console.log(members[i])
-        
-        $("#spnMember" + i).attr("class", 'glyphicon glyphicon-collapse-down');
-        $("#divMemberDetail" + i).slideDown("slow");
-      },   
-      error: function() {
-        $('#divBody').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see biographical information.</div>");
-      },
-    });
+  if (members[i].expanded) {
+    members[i].expanded = false;
+    $("#spnMember" + i).attr("class", 'glyphicon glyphicon-expand');
+    $("#divMemberDetail" + i).slideUp("slow");
   }
   else {
-    if (members[i].expanded) {
-      members[i].expanded = false;
-      $("#spnMember" + i).attr("class", 'glyphicon glyphicon-expand');
-      $("#divMemberDetail" + i).slideUp("slow");
-    }
-    else {
-      members[i].expanded = true;
-      $("#spnMember" + i).attr("class", 'glyphicon glyphicon-collapse-down');
-      $("#divMemberDetail" + i).slideDown("slow");
-    }
+    members[i].expanded = true;
+    $("#spnMember" + i).attr("class", 'glyphicon glyphicon-collapse-down');
+    $("#divMemberDetail" + i).slideDown("slow");
   }
 }
 
 function btnSearchOnClick() {
   store.set("state", $("#cboState").val());
   store.set("chamber", $("#cboChamber").val());
-  store.set("district", $("#cboDistrict").val());   
+  store.set("district", $("#cboDistrict").val());
+  store.set("senator", $("#cboSenator").val());
 }
 
 function formatDate(date) {
@@ -685,6 +686,80 @@ function cboStateOnChange() {
 }
 
 function cboChamberOnChange() {
+  var one = "";
+  var two = "";
+
+   if ($("#cboChamber").val().length > 0) {
+    $("#cboSenator").find("option").remove();
+    $("#cboSenator").append($("<option>", {
+      value: "",
+      text: ""
+    }));
+    
+    switch ($("#cboState").val()) {
+      case "AL": one = "Jeff Sessions"; two = "Richard Shelby"; break;
+      case "AK": one = "Mark Begich"; two = "Lisa Murkowski";  break; break; 
+      case "AZ": one = "Jeff Flake"; two = "John McCain"; break; 
+      case "AR": one = "John Boozman"; two = "Mark Pryor"; break; 
+      case "CA": one = "Barbara Boxer"; two = "Dianne Feinstein"; break; 
+      case "CO": one = "Michael Bennet"; two = "Mark Udall"; break; 
+      case "CT": one = "Richard Blumenthal"; two = "Christopher Murphy"; break; 
+      case "DE": one = "Thomas Carper"; two = "Christopher Coons"; break; 
+      case "FL": one = "Bill Nelson"; two = "Marco Rubio"; break; 
+      case "GA": one = "Saxby Chambliss"; two = "Johnny Isakson"; break; 
+      case "HI": one = "Mazie Hirono"; two = "Brian Schatz"; break; 
+      case "ID": one = "Mike Crapo"; two = "James Risch"; break; 
+      case "IL": one = "Richard Durbin"; two = "Mark Kirk"; break; 
+      case "IN": one = "Daniel Coats"; two = "Joe Donnelly"; break; 
+      case "IA": one = "Chuck Grassley"; two = "Tom Harkin"; break; 
+      case "KS": one = "Jerry Moran"; two = "Pat Roberts"; break; 
+      case "KY": one = "Mitch McConnell"; two = "Rand Paul"; break; 
+      case "LA": one = "Mary Landrieu"; two = "David Vitter"; break; 
+      case "ME": one = "Susan Collins"; two = "Angus King"; break; 
+      case "MD": one = "Benjamin Cardin"; two = "Barbara Mikulski"; break; 
+      case "MA": one = "Edward Markey"; two = "Elizabeth Warren"; break; 
+      case "MI": one = "Carl Levin"; two = "Debbie Stabenow"; break; 
+      case "MN": one = "Al Franken"; two = "Amy Klobuchar"; break; 
+      case "MS": one = "Thad Cochran"; two = "Roger Wicker"; break; 
+      case "MO": one = "Roy Blunt"; two = "Claire McCaskill"; break; 
+      case "MT": one = "Jon Tester"; two = "John Walsh"; break; 
+      case "NE": one = "Deb Fischer"; two = "Mike Johanns"; break;
+      case "NV": one = "Dean Heller"; two = "Harry Reid"; break;
+      case "NH": one = "Kelly Ayotte"; two = "Jeanne Shaheen"; break;
+      case "NJ": one = "Cory Booker"; two = "Robert Menendez"; break;
+      case "NM": one = "Martin Heinrich"; two = "Tom Udall"; break;
+      case "NY": one = "Kirsten Gillibrand"; two = "Charles Schumer"; break;
+      case "NC": one = "Richard Burr"; two = "Kay Hagan"; break;
+      case "ND": one = "Heidi Heitkamp"; two = "John Hoeven"; break;
+      case "OH": one = "Sherrod Brown"; two = "Rob Portman"; break;
+      case "OK": one = "Tom Coburn"; two = "James Inhofe"; break;
+      case "OR": one = "Jeff Merkley"; two = "Ron Wyden"; break;
+      case "PA": one = "Robert Casey"; two = "Patrick Toomey"; break;
+      case "RI": one = "Jack Reed"; two = "Sheldon Whitehouse"; break;
+      case "SC": one = "Lindsey Graham"; two = "Tim Scott"; break;
+      case "SD": one = "Tim Johnson"; two = "John Thune"; break;
+      case "TN": one = "Lamar Alexander"; two = "Bob Corker"; break;
+      case "TX": one = "John Cornyn"; two = "Ted Cruz"; break;
+      case "UT": one = "Orrin Hatch"; two = "Mike Lee"; break;
+      case "VT": one = "Patrick Leahy"; two = "Bernard Sanders"; break;
+      case "VA": one = "Tim Kaine"; two = "Mark Warner"; break;
+      case "WA": one = "Maria Cantwell"; two = "Patty Murray"; break;
+      case "WV": one = "Joe Manchin"; two = "John Rockefeller"; break;
+      case "WI": one = "Tammy Baldwin"; two = "Ron Johnson"; break;
+      case "WY": one = "John Barrasso"; two = "Michael Enzi"; break;
+    }
+  }
+
+  $('#cboSenator').append($("<option>", {
+      value: one,
+      text: one
+    }));
+
+  $('#cboSenator').append($("<option>", {
+      value: two,
+      text: two
+    }));
+
   enableDisableFields();
 }
 
@@ -692,10 +767,27 @@ function cboDistrictOnChange() {
   enableDisableFields();
 }
 
+function cboSenatorOnChange() {
+  enableDisableFields();
+}
+
 function enableDisableFields() {
-  if ($("#cboState").val().length > 0 && $("#cboChamber").val() != "Senate")
-    $("#cboDistrict").prop("disabled", false);
-  else {
+  if ($("#cboState").val().length > 0) {
+    if ($("#cboChamber").val() != "Senate") {
+      $("#cboDistrict").prop("disabled", false);
+
+      $("#cboSenator").prop("disabled", true);
+      $("#cboSenator").val("");
+    } else {
+      $("#cboSenator").prop("disabled", false);
+
+      $("#cboDistrict").prop("disabled", true);
+      $("#cboDistrict").val("");
+    }
+  } else {
+    $("#cboSenator").prop("disabled", true);
+    $("#cboSenator").val("");
+
     $("#cboDistrict").prop("disabled", true);
     $("#cboDistrict").val("");
   }
@@ -706,8 +798,10 @@ function enableDisableFields() {
     if ($("#cboChamber").val() == "House") {
       if ($("#cboDistrict").val().length > 0)
         $("#btnSearch").attr("disabled", false);
-    }
-    else
+    } else if ($("#cboChamber").val() == "Senate") {
+      if ($("#cboSenator").val().length > 0)
+        $("#btnSearch").attr("disabled", false);
+    } else
       $("#btnSearch").attr("disabled", false);
   }
 }

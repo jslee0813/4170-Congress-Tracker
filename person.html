@@ -10,7 +10,7 @@
     <link href="css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
   </head>
-  <body>
+  <body id='body'>
     <div class="navbar navbar-inverse" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -24,7 +24,7 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li>
+            <li> 
               <a data-toggle="modal" href="#mdlSearch" id="btnSearchModal"><u>S</u>earch</a>
             </li>
             <li class="dropdown">
@@ -44,14 +44,14 @@
     <div class="panel-body" id="divBody">
       <div class="container">
         <div class="row">
-          <div class="col-md-7"><h2>Bio</h2></div>
+          <div class="col-md-7"><h2 id='bio_name'></h2></div>
         </div>
         <div class="row" style="padding-top:10px">        
           <div class="col-md-5" id="divMember0"></div>
           <div class="col-md-2"></div>
           <div class="col-md-5" id="divMember1"></div>
           <div class="col-md-12"><hr></div>
-        </div>        
+        </div>
       </div>
       <div class="page-header" id="billSectionHead">
         <h2>Bills</h2>
@@ -136,6 +136,13 @@
                     <option selected="selected" value=""/>
                     <option>House</option>
                     <option>Senate</option>
+                  </select>
+                </div>                
+              </div>
+              <div class="form-group">
+                <label for="txtUsername" class="col-sm-3 control-label">Senator:</label>
+                <div class="col-sm-9">
+                  <select class="form-control" id="cboSenator" disabled="true" onchange="cboSenatorOnChange()">
                   </select>
                 </div>                
               </div>

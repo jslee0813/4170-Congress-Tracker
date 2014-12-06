@@ -102,7 +102,8 @@ function displayArticles(){
 function btnSearchOnClick() {
   store.set("state", $("#cboState").val());
   store.set("chamber", $("#cboChamber").val());
-  store.set("district", $("#cboDistrict").val());   
+  store.set("district", $("#cboDistrict").val());
+  store.set("senator", $("#cboSenator").val());
 }
 
 function cboStateOnChange() {
@@ -180,6 +181,80 @@ function cboStateOnChange() {
 }
 
 function cboChamberOnChange() {
+  var one = "";
+  var two = "";
+
+   if ($("#cboChamber").val().length > 0) {
+    $("#cboSenator").find("option").remove();
+    $("#cboSenator").append($("<option>", {
+      value: "",
+      text: ""
+    }));
+    
+    switch ($("#cboState").val()) {
+      case "AL": one = "Jeff Sessions"; two = "Richard Shelby"; break;
+      case "AK": one = "Mark Begich"; two = "Lisa Murkowski";  break; break; 
+      case "AZ": one = "Jeff Flake"; two = "John McCain"; break; 
+      case "AR": one = "John Boozman"; two = "Mark Pryor"; break; 
+      case "CA": one = "Barbara Boxer"; two = "Dianne Feinstein"; break; 
+      case "CO": one = "Michael Bennet"; two = "Mark Udall"; break; 
+      case "CT": one = "Richard Blumenthal"; two = "Christopher Murphy"; break; 
+      case "DE": one = "Thomas Carper"; two = "Christopher Coons"; break; 
+      case "FL": one = "Bill Nelson"; two = "Marco Rubio"; break; 
+      case "GA": one = "Saxby Chambliss"; two = "Johnny Isakson"; break; 
+      case "HI": one = "Mazie Hirono"; two = "Brian Schatz"; break; 
+      case "ID": one = "Mike Crapo"; two = "James Risch"; break; 
+      case "IL": one = "Richard Durbin"; two = "Mark Kirk"; break; 
+      case "IN": one = "Daniel Coats"; two = "Joe Donnelly"; break; 
+      case "IA": one = "Chuck Grassley"; two = "Tom Harkin"; break; 
+      case "KS": one = "Jerry Moran"; two = "Pat Roberts"; break; 
+      case "KY": one = "Mitch McConnell"; two = "Rand Paul"; break; 
+      case "LA": one = "Mary Landrieu"; two = "David Vitter"; break; 
+      case "ME": one = "Susan Collins"; two = "Angus King"; break; 
+      case "MD": one = "Benjamin Cardin"; two = "Barbara Mikulski"; break; 
+      case "MA": one = "Edward Markey"; two = "Elizabeth Warren"; break; 
+      case "MI": one = "Carl Levin"; two = "Debbie Stabenow"; break; 
+      case "MN": one = "Al Franken"; two = "Amy Klobuchar"; break; 
+      case "MS": one = "Thad Cochran"; two = "Roger Wicker"; break; 
+      case "MO": one = "Roy Blunt"; two = "Claire McCaskill"; break; 
+      case "MT": one = "Jon Tester"; two = "John Walsh"; break; 
+      case "NE": one = "Deb Fischer"; two = "Mike Johanns"; break;
+      case "NV": one = "Dean Heller"; two = "Harry Reid"; break;
+      case "NH": one = "Kelly Ayotte"; two = "Jeanne Shaheen"; break;
+      case "NJ": one = "Cory Booker"; two = "Robert Menendez"; break;
+      case "NM": one = "Martin Heinrich"; two = "Tom Udall"; break;
+      case "NY": one = "Kirsten Gillibrand"; two = "Charles Schumer"; break;
+      case "NC": one = "Richard Burr"; two = "Kay Hagan"; break;
+      case "ND": one = "Heidi Heitkamp"; two = "John Hoeven"; break;
+      case "OH": one = "Sherrod Brown"; two = "Rob Portman"; break;
+      case "OK": one = "Tom Coburn"; two = "James Inhofe"; break;
+      case "OR": one = "Jeff Merkley"; two = "Ron Wyden"; break;
+      case "PA": one = "Robert Casey"; two = "Patrick Toomey"; break;
+      case "RI": one = "Jack Reed"; two = "Sheldon Whitehouse"; break;
+      case "SC": one = "Lindsey Graham"; two = "Tim Scott"; break;
+      case "SD": one = "Tim Johnson"; two = "John Thune"; break;
+      case "TN": one = "Lamar Alexander"; two = "Bob Corker"; break;
+      case "TX": one = "John Cornyn"; two = "Ted Cruz"; break;
+      case "UT": one = "Orrin Hatch"; two = "Mike Lee"; break;
+      case "VT": one = "Patrick Leahy"; two = "Bernard Sanders"; break;
+      case "VA": one = "Tim Kaine"; two = "Mark Warner"; break;
+      case "WA": one = "Maria Cantwell"; two = "Patty Murray"; break;
+      case "WV": one = "Joe Manchin"; two = "John Rockefeller"; break;
+      case "WI": one = "Tammy Baldwin"; two = "Ron Johnson"; break;
+      case "WY": one = "John Barrasso"; two = "Michael Enzi"; break;
+    }
+  }
+
+  $('#cboSenator').append($("<option>", {
+      value: one,
+      text: one
+    }));
+
+  $('#cboSenator').append($("<option>", {
+      value: two,
+      text: two
+    }));
+
   enableDisableFields();
 }
 
@@ -187,10 +262,27 @@ function cboDistrictOnChange() {
   enableDisableFields();
 }
 
+function cboSenatorOnChange() {
+  enableDisableFields();
+}
+
 function enableDisableFields() {
-  if ($("#cboState").val().length > 0 && $("#cboChamber").val() != "Senate")
-    $("#cboDistrict").prop("disabled", false);
-  else {
+  if ($("#cboState").val().length > 0) {
+    if ($("#cboChamber").val() != "Senate") {
+      $("#cboDistrict").prop("disabled", false);
+
+      $("#cboSenator").prop("disabled", true);
+      $("#cboSenator").val("");
+    } else {
+      $("#cboSenator").prop("disabled", false);
+
+      $("#cboDistrict").prop("disabled", true);
+      $("#cboDistrict").val("");
+    }
+  } else {
+    $("#cboSenator").prop("disabled", true);
+    $("#cboSenator").val("");
+
     $("#cboDistrict").prop("disabled", true);
     $("#cboDistrict").val("");
   }
@@ -201,8 +293,10 @@ function enableDisableFields() {
     if ($("#cboChamber").val() == "House") {
       if ($("#cboDistrict").val().length > 0)
         $("#btnSearch").attr("disabled", false);
-    }
-    else
+    } else if ($("#cboChamber").val() == "Senate") {
+      if ($("#cboSenator").val().length > 0)
+        $("#btnSearch").attr("disabled", false);
+    } else
       $("#btnSearch").attr("disabled", false);
   }
 }
