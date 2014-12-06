@@ -308,11 +308,13 @@ function btnHideOnClick() {
 function getMemberBio() {
   var state = store.get("state").toUpperCase();
   var chamber = store.get("chamber").toLowerCase();
-  var district = store.get("district").toLowerCase();
   var url;
       
   if (chamber == "house")
+  {
+    var district = store.get("district").toLowerCase();
     url = "http://api.nytimes.com/svc/politics/" + auth.version + "/us/legislative/congress/members/" + chamber + "/" + state + "/" + district + "/current.json?api-key=" + auth.congress_api_key;
+  }
   else
     url = "http://api.nytimes.com/svc/politics/" + auth.version + "/us/legislative/congress/members/" + chamber + "/" + state + "/current.json?api-key=" + auth.congress_api_key;
 
@@ -427,6 +429,10 @@ function renderMembers(index) {
     var favs = store.get("favorites");
     var tooltip;
     var glyph;
+    if(!favs)
+    {
+      favs = {};
+    }
     if(favs[members[i].name])
     {
       tooltip = "Remove from Favorites";

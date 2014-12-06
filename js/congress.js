@@ -74,7 +74,8 @@ function addFavs()
 
   if(!favs)
   {
-    favs = {};    
+    favs = {};
+    store.set("favorites", favs);    
   }
   var content = "";
 
@@ -104,7 +105,7 @@ function displayArticles(){
   var count = 0;
   $('#articleSection').empty();
 
-  var favorites = store.get(favorites);
+  var favorites = store.get("favorites");
 
 
   //Process of iterating through the list of favorites, displaying two relevant articles for each favorite.
