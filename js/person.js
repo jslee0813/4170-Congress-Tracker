@@ -241,32 +241,25 @@ function displayArticles(){
       dataType: "json",
       cache: true,
       success:function(json){
+        articleArray = json.response.docs;
 
-          json;
-          articleArray1 = json.response.docs;
-          
-          //If the page has two members, then only 3 articles for the first member will be displayed in this ajax call
-          if(senatePage)
-          {
-              for(var i = 0; i < 3; i++)
-              {
-                  $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray1[i].web_url + "\" target=\"_blank\">" 
-                                              + articleArray1[i].headline.main + "</a><h2><p class=\"articleDetail\">"
-                                              + articleArray1[i].byline.original + "<br>" 
-                                              + articleArray1[i].pub_date + "<br></p><p class=\"snippet\">" 
-                                              + articleArray1[i].snippet + "</p></div>");
-              }   
+        //If the page has two members, then only 3 articles for the first member will be displayed in this ajax call
+        var end = 5;
+        if(senatePage) {
+          end = 3;
+        }
+        for(var i = 0; i < end; i++)
+        {
+          var date_time = articleArray[i].pub_date.split(/Z/)[0].split(/T/);
+          var byline = "";
+          if (articleArray[i].byline.length != 0) {
+            byline = articleArray[i].byline.original + "<br>";
           }
-          else
-          {
-              for(var i = 0; i < 5; i++)
-              { 
-                  $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray1[i].web_url + "\" target=\"_blank\">" 
-                                              + articleArray1[i].headline.main + "</a><h2><p class=\"articleDetail\">"
-                                              + articleArray1[i].byline.original + "<br>" 
-                                              + articleArray1[i].pub_date + "<br></p><p class=\"snippet\">" 
-                                              + articleArray1[i].snippet + "</p></div>");
-              }
+          $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray[i].web_url + "\" target=\"_blank\">" 
+                                    + articleArray[i].headline.main + "</a><h2><p class=\"articleDetail\">"
+                                    + byline
+                                    + date_time[0] + " at " + date_time[1] + "<br></p><p class=\"snippet\">" 
+                                    + articleArray[i].snippet + "</p></div>");
           }
       },
       error:function(){
@@ -356,7 +349,7 @@ function getMemberBio() {
       renderMembers(-1);      
     },
     error: function() {
-      $('#divMember0').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see information.</div>");
+      $('#divBody').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see information.</div>");
     },
   });
 }
@@ -472,7 +465,7 @@ function getMemberRecord(member_id) {
       renderMemberVotes(member_roles);
     },
     error: function() {
-      $('#divMember1').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see voting record information.</div>");
+      $('#divMember1').empty().show().append("<div class='error'>Error occurred contacting the API. Please reload the page to see voting record information.</div>");
     }
   });
 }
