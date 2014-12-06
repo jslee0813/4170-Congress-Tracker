@@ -1,10 +1,10 @@
 // API keys
 var auth = {
   version: "v3",
-  campaign_finance_api_key: "69769739adad5ec9e5044090d867a62e:14:70154539",
-  congress_api_key: "96625a843db6b50dcdb259b94e281246:8:70154539",
-  times_newswire_api_key: "4f54e9027e2dfda5b275fdb8ddd93ba4:18:70154539",
-  article_search_api_key: "1e94e0ac552a0041906f50590784f934:9:70154539"
+  campaign_finance_api_key: "",
+  congress_api_key: "",
+  times_newswire_api_key: "",
+  article_search_api_key: ""
 }
 
 var members = [];
@@ -143,11 +143,68 @@ function getCampaignFinance(member) {
     }, 
     error: function(error)
     {
+      $('#').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see financial information.</div>");
+
       console.log(error)
     }
   })
 }
 
+function displayBills(member_id) {
+  $('#billSection').empty();
+  $.ajax({
+    url: "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/members/" + member_id + "/bills/introduced.json?api-key=" + auth.congress_api_key,
+    type: "GET", 
+    dataType: "json", 
+    cache: true, 
+    success: function(data) {
+      var bills = data.results[0]["bills"];
+      for (var i = 0; i < bills.length; i++) {
+        var bill = bills[i];
+
+        var content = "<div class=\"well\"><h4>";
+        if (bill.number != undefined && bill.number.length > 0) {
+          content += bill.number + ": ";
+        }
+        if (bill.title != undefined && bill.title.length > 0) {
+           content += bill.title;
+        }
+        content += "</h4>";
+
+        if (bill.introduced_date != undefined && bill.introduced_date.length > 0) {
+          content += "<label>Introduced:&nbsp;&nbsp;&nbsp;</label>" + bill.introduced_date;
+        }
+        if (bill.congress != undefined && bill.congress.length > 0) {
+           content += " (Congress "+ bill.congress + ")";
+        }
+        content += "<br>";
+
+        if (bill.latest_major_action_date != undefined && bill.latest_major_action_date.length > 0) {
+          content += "<label>Latest Action:&nbsp;&nbsp;&nbsp;</label>"+ bill.latest_major_action_date +"<br>"
+        }
+
+        if (bill.committees != undefined && bill.committees.length > 0) {
+           content += "<label>Committee(s):&nbsp;&nbsp;&nbsp;</label>" + bill.committees + "<br>"
+        }
+        
+        if (bill.cosponsors != undefined && bill.cosponsors.length > 0) {
+           content += "<label>Number of Co-sponsors:&nbsp;&nbsp;&nbsp;</label>" + bill.cosponsors + "<br>"
+        }
+        
+        if (bill.latest_major_action != undefined && bill.latest_major_action.length > 0) {
+          content += "<label>Recent Major Action:&nbsp;&nbsp;&nbsp;</label>" + bill.latest_major_action + "<br>";
+        }
+        content += "</p></div>";
+
+        $('#billSection').append(content);
+      }
+    },
+    error: function() {
+      $('#billSection').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see bills information.</div>");
+    }
+  });
+
+}
 
 //Article display code --Connor
 function displayArticles(){
@@ -213,7 +270,7 @@ function displayArticles(){
           }
       },
       error:function(){
-          alert("Error")
+          $('#articleSection').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see news information.</div>");
       },
   });
 
@@ -243,7 +300,7 @@ function displayArticles(){
           
           },
           error:function(){
-              alert("Error")
+            $('#articleSection').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see news information.</div>");
           },
       });
   }
@@ -293,12 +350,13 @@ function getMemberBio() {
         members[i] = member;        
       });
       
-      getMemberBills(members[0].id);
+      getMemberRecord(members[0].id);
+      displayBills(members[0].id);
       displayArticles();
       renderMembers(-1);      
     },
     error: function() {
-      $("#divBody").empty().append("A problem occurred when loading data. Please try again a few seconds later.");
+      $('#divMember0').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see information.</div>");
     },
   });
 }
@@ -383,7 +441,8 @@ function renderMembers(index) {
   }  
 }
 
-function getMemberBills(member_id) {
+function getMemberRecord(member_id) {
+  console.log(member_id);
   $.ajax({
     url: "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/members/" + member_id + ".json?api-key=" + auth.congress_api_key,
     type: "GET", 
@@ -413,8 +472,7 @@ function getMemberBills(member_id) {
       renderMemberVotes(member_roles);
     },
     error: function() {
-      // TODO: Not sure yet what makes sense here
-      alert("getMemberVotes error");
+      $('#divMember1').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see voting record information.</div>");
     }
   });
 }
@@ -430,7 +488,7 @@ function renderMemberVotes(member_roles){
 
   var content = "<p><button id='btnVote' style='outline:0' class='btn btn-link btn-xs' onclick='btnVoteOnClick()'> \
                 <span id='spnVote' class='glyphicon glyphicon-"+ exp_or_col + "' aria-hidden='true' style='font-size:18px'></span> \
-                </button>&nbsp;&nbsp;<span style='font-size:18px'>Record</span></p>\
+                </button>&nbsp;&nbsp;<span style='font-size:18px'>Voting Record</span></p>\
                 <div id='divVoteDetail'" + show_content;
 
     if (member_roles.most_recent_vote != undefined && member_roles.most_recent_vote.length > 0) {
@@ -530,7 +588,7 @@ function btnMemberOnClick(i) {
         $("#divMemberDetail" + i).slideDown("slow");
       },   
       error: function() {
-        $("#divBody").empty().append("A problem occurred when loading data. Please try again a few seconds later.");
+        $('#divBody').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see biographical information.</div>");
       },
     });
   }
