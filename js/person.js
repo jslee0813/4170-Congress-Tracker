@@ -1,10 +1,10 @@
 // API keys
 var auth = {
   version: "v3",
-  campaign_finance_api_key: "",
-  congress_api_key: "",
+  campaign_finance_api_key: "6d115c6f94608e2f0d4f50ba17803e2e:5:70213601",
+  congress_api_key: "acd147dbf1a3341b3e0e82b5b3afb507:4:70213601",
   times_newswire_api_key: "",
-  article_search_api_key: ""
+  article_search_api_key: "f9fc1ffe76df50642e1e19b658fcc76a:18:70213601"
 }
 
 var members = [];
@@ -236,7 +236,7 @@ function displayArticles(){
   var fName = memberName.slice(0, pos);
   var lName = memberName.slice(pos + 1, memberName.length);
   
-  url1 = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + fName + "+" + lName + "&begin_date=20140101&api-key=" + auth.article_search_api_key;
+  url1 = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + fName + "+" + lName + "+" + "Congress" + "&begin_date=20140101&api-key=" + auth.article_search_api_key;
   if(members.length > 1)
   {
       memberName = members[1].name;
@@ -244,7 +244,7 @@ function displayArticles(){
       fName = memberName.slice(0, pos);
       lName = memberName.slice(pos + 1, memberName.length);
       
-      url2 = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + fName + "+" + lName + "&begin_date20140101&api-key=" + auth.article_search_api_key;
+      url2 = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + fName + "+" + lName + "+" + "Congress" + "&begin_date20140101&api-key=" + auth.article_search_api_key;
       senatePage = true;
   }
   

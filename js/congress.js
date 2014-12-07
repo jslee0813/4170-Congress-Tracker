@@ -1,10 +1,10 @@
 // API keys
 var auth = {
   version: "v3",
-  campaign_finance_api_key: "",
-  congress_api_key: "",
+  campaign_finance_api_key: "6d115c6f94608e2f0d4f50ba17803e2e:5:70213601",
+  congress_api_key: "acd147dbf1a3341b3e0e82b5b3afb507:4:70213601",
   times_newswire_api_key: "",
-  article_search_api_key: ""
+  article_search_api_key: "f9fc1ffe76df50642e1e19b658fcc76a:18:70213601"
 }
 
 $(document).ready(function() {
@@ -116,7 +116,7 @@ function displayArticles(){
   		if(favorites.hasOwnProperty(name))
   		{
             $.ajax({
-                url: "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + name + "&begin_date=20140101&api-key=" + auth.article_search_api_key,
+                url: "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + name + "+" + "Congress" + "&begin_date=20140101&api-key=" + auth.article_search_api_key,
       			type: "get",
       			dataType: "json",
       			cache: true,
