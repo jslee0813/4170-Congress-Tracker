@@ -1,10 +1,10 @@
 // API keys
 var auth = {
   version: "v3",
-  campaign_finance_api_key: "",
-  congress_api_key: "",
-  times_newswire_api_key: "",
-  article_search_api_key: ""
+  campaign_finance_api_key: "69769739adad5ec9e5044090d867a62e:14:70154539",
+  congress_api_key: "96625a843db6b50dcdb259b94e281246:8:70154539",
+  times_newswire_api_key: "4f54e9027e2dfda5b275fdb8ddd93ba4:18:70154539",
+  article_search_api_key: "1e94e0ac552a0041906f50590784f934:9:70154539"
 }
 
 var members = [];
@@ -381,21 +381,21 @@ function getMemberBio() {
   });
 }
 
-function btnFavoriteOnClick(i)
+function btnFavoriteOnClick()
 {
   var favs = store.get('favorites');
 
   if(!favs)
     favs = {};
-  if(favs[members[i].name])
+  if(favs[members[0].name])
   {
-    $("#spnFav" + i).attr('class', "glyphicon glyphicon-star-empty star");
-    delete favs[members[i].name];
+    $("#spnFav0").attr('class', "glyphicon glyphicon-star-empty star");
+    delete favs[members[0].name];
   }
   else
   {
-    favs[members[i].name] = members[i];
-    $("#spnFav" + i).attr('class', "glyphicon glyphicon-star star");
+    favs[members[0].name] = members[0];
+    $("#spnFav0").attr('class', "glyphicon glyphicon-star star");
   }
 
   store.set('favorites', favs);
@@ -441,10 +441,8 @@ function favSelected(name)
 }
 
 function renderMembers() {
-  //for (var i = 0; i < members.length; i++) {
-    var i = 0;
-    var content = "<p><button id='btnMember" + i + "' style='outline:0' class='btn btn-link btn-xs' onclick='btnMemberOnClick(" + i + ")'> \
-        <span id='spnMember" + i + "' class='glyphicon glyphicon-";
+    var content = "<p><button id='btnMember0' style='outline:0' class='btn btn-link btn-xs' onclick='btnMemberOnClick()'> \
+        <span id='spnMember0' class='glyphicon glyphicon-";
   
     var favs = store.get("favorites");
     var tooltip;
@@ -453,7 +451,7 @@ function renderMembers() {
     {
       favs = {};
     }
-    if(favs[members[i].name])
+    if(favs[members[0].name])
     {
       tooltip = "Remove from Favorites";
       glyph = "glyphicon-star";
@@ -464,108 +462,106 @@ function renderMembers() {
       glyph = "glyphicon-star-empty";
     }
 
-    if (members[i].expanded) 
+    if (members[0].expanded) 
       content = content + "collapse-down";
     else
       content = content + "expand";
     
     content += "' aria-hidden='true' style='font-size:18px'></span></button>&nbsp;&nbsp;<span style='font-size:18px'>Bio</span> \
-                <button id='btnFavorite" + i + "' title='" + tooltip + "' style='outline:0' class = 'btn btn-link btn-xs' onclick='btnFavoriteOnClick(" + i + ")'> \
-                <span id='spnFav" + i + "' class='glyphicon " + glyph + " star' style='font-size:18px'></span></button></p>";
+                <button id='btnFavorite0' title='" + tooltip + "' style='outline:0' class = 'btn btn-link btn-xs' onclick='btnFavoriteOnClick()'> \
+                <span id='spnFav0' class='glyphicon " + glyph + " star' style='font-size:18px'></span></button></p>";
 
 
 
-    content = content + "<div id='divMemberDetail" + i + "'";
+    content = content + "<div id='divMemberDetaili'";
       
-    if (members[i].expanded) 
+    if (members[0].expanded) 
       content = content + ">";
     else
       content = content + " style='display:none'>";
    
-    if (members[i].dob != undefined && members[i].dob.length > 0)
-      content = content + "<label>Date of Birth:&nbsp;&nbsp;&nbsp;</label><text>" + formatDate(members[i].dob) + "</text></br>";
+    if (members[0].dob != undefined && members[0].dob.length > 0)
+      content = content + "<label>Date of Birth:&nbsp;&nbsp;&nbsp;</label><text>" + formatDate(members[0].dob) + "</text></br>";
     
-    if (members[i].gender != undefined && members[i].gender.length > 0) {
+    if (members[0].gender != undefined && members[0].gender.length > 0) {
       content = content + "<label>Gender:&nbsp;&nbsp;&nbsp;</label><text>";
         
-      if (members[i].gender == "M")
+      if (members[0].gender == "M")
         content = content + "Male</text><br/>";
       else
         content = content + "Female</text><br/>";
     }
     
-    if (members[i].party != undefined && members[i].party.length > 0) {
+    if (members[0].party != undefined && members[0].party.length > 0) {
       content = content + "<label>Party:&nbsp;&nbsp;&nbsp;</label><text>";
       
-      if (members[i].party == "D")
+      if (members[0].party == "D")
         content = content + "Democrat</text><br/>";
       else
         content = content + "Republican</text><br/>";
     }
     
-    if (members[i].role != undefined && members[i].role.length > 0)
-      content = content + "<label>Role:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].role + "</text><br/>";
+    if (members[0].role != undefined && members[0].role.length > 0)
+      content = content + "<label>Role:&nbsp;&nbsp;&nbsp;</label><text>" + members[0].role + "</text><br/>";
     
     content = content + "<label>State:&nbsp;&nbsp;&nbsp;</label><text>" + store.get("state") + "</text><br/>";
     
-    if (members[i].district != undefined && members[i].district.length > 0)
-      content = content + "<label>District:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].district + "</text><br/>";
+    if (members[0].district != undefined && members[0].district.length > 0)
+      content = content + "<label>District:&nbsp;&nbsp;&nbsp;</label><text>" + members[0].district + "</text><br/>";
     
-    //if (members[i].most_recent_vote != undefined && members[i].most_recent_vote.length > 0)
-    //  content = content + "<label>Most Recent Vote:&nbsp;&nbsp;&nbsp;</label><text>" + formatDate(members[i].most_recent_vote) + "</text><br/>";
+    //if (members[0].most_recent_vote != undefined && members[0].most_recent_vote.length > 0)
+    //  content = content + "<label>Most Recent Vote:&nbsp;&nbsp;&nbsp;</label><text>" + formatDate(members[0].most_recent_vote) + "</text><br/>";
     
-    if (members[i].next_election != undefined && members[i].next_election.length > 0)
-      content = content + "<label>Next Election Year:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].next_election + "</text><br/>";
+    if (members[0].next_election != undefined && members[0].next_election.length > 0)
+      content = content + "<label>Next Election Year:&nbsp;&nbsp;&nbsp;</label><text>" + members[0].next_election + "</text><br/>";
     
-   if (members[i].total_contributions != undefined && members[i].total_contributions.length > 0)
-      content = content + "<label>Total Contributions:&nbsp;&nbsp;&nbsp;</label><text>" + members[i].total_contributions + "</text><br/>";
+   if (members[0].total_contributions != undefined && members[0].total_contributions.length > 0)
+      content = content + "<label>Total Contributions:&nbsp;&nbsp;&nbsp;</label><text>" + members[0].total_contributions + "</text><br/>";
 
-    if (members[i].total_disbursements != undefined && members[i].total_disbursements.length > 0)
-      content = content + "<text>&nbsp;&nbsp;&nbsp;From Individuals:&nbsp;&nbsp;&nbsp;</text>" + members[i].total_disbursements + "<br/>";
+    if (members[0].total_disbursements != undefined && members[0].total_disbursements.length > 0)
+      content = content + "<text>&nbsp;&nbsp;&nbsp;From Individuals:&nbsp;&nbsp;&nbsp;</text>" + members[0].total_disbursements + "<br/>";
 
-    if (members[i].total_from_pacs != undefined && members[i].total_from_pacs.length > 0)
-      content = content + "<text>&nbsp;&nbsp;&nbsp;From PACS:&nbsp;&nbsp;&nbsp;</text>" + members[i].total_from_pacs + "<br/>";
+    if (members[0].total_from_pacs != undefined && members[0].total_from_pacs.length > 0)
+      content = content + "<text>&nbsp;&nbsp;&nbsp;From PACS:&nbsp;&nbsp;&nbsp;</text>" + members[0].total_from_pacs + "<br/>";
 
-    if (members[i].total_from_individuals != undefined && members[i].total_from_individuals.length > 0)
-      content = content + "<text>&nbsp;&nbsp;&nbsp;Disbursements:&nbsp;&nbsp;&nbsp;</text>" + members[i].total_from_individuals + "<br/>";
+    if (members[0].total_from_individuals != undefined && members[0].total_from_individuals.length > 0)
+      content = content + "<text>&nbsp;&nbsp;&nbsp;Disbursements:&nbsp;&nbsp;&nbsp;</text>" + members[0].total_from_individuals + "<br/>";
 
-    if (members[i].total_receipts != undefined && members[i].total_receipts.length > 0)
-      content = content + "<text>&nbsp;&nbsp;&nbsp;Receipts:&nbsp;&nbsp;&nbsp;</text>" + members[i].total_receipts + "<br/>";
+    if (members[0].total_receipts != undefined && members[0].total_receipts.length > 0)
+      content = content + "<text>&nbsp;&nbsp;&nbsp;Receipts:&nbsp;&nbsp;&nbsp;</text>" + members[0].total_receipts + "<br/>";
 
-    if (members[i].total_refunds != undefined && members[i].total_refunds.length > 0)
-      content = content + "<text>&nbsp;&nbsp;&nbsp;Refunds:&nbsp;&nbsp;&nbsp;</text>" + members[i].total_refunds + "<br/>";
+    if (members[0].total_refunds != undefined && members[0].total_refunds.length > 0)
+      content = content + "<text>&nbsp;&nbsp;&nbsp;Refunds:&nbsp;&nbsp;&nbsp;</text>" + members[0].total_refunds + "<br/>";
     
     content = content + "<br/>";
     
-    if (members[i].url != undefined && members[i].url.length > 0)
-      content = content + "<a target='_blank' href='" + members[i].url + "'><span class='glyphicon glyphicon-home'></span></a>&nbsp;&nbsp;";
+    if (members[0].url != undefined && members[0].url.length > 0)
+      content = content + "<a target='_blank' href='" + members[0].url + "'><span class='glyphicon glyphicon-home'></span></a>&nbsp;&nbsp;";
     
-    if (members[i].twitter != undefined && members[i].twitter.length > 0)
-      content = content + "<a target='_blank' href='https://twitter.com/" + members[i].twitter + "'><img src='img/twitter.png' style='height:24px; width:24px; padding-bottom:2px'></span></a>&nbsp;&nbsp;";
+    if (members[0].twitter != undefined && members[0].twitter.length > 0)
+      content = content + "<a target='_blank' href='https://twitter.com/" + members[0].twitter + "'><img src='img/twitter.png' style='height:24px; width:24px; padding-bottom:2px'></span></a>&nbsp;&nbsp;";
     
-    if (members[i].facebook != undefined && members[i].facebook.length > 0)
-      content = content + "<a target='_blank' href='https://facebook.com/" + members[i].facebook + "'><img src='img/facebook.png' style='height:24px; width:24px; padding-bottom:2px'></span></a>&nbsp;&nbsp;";
+    if (members[0].facebook != undefined && members[0].facebook.length > 0)
+      content = content + "<a target='_blank' href='https://facebook.com/" + members[0].facebook + "'><img src='img/facebook.png' style='height:24px; width:24px; padding-bottom:2px'></span></a>&nbsp;&nbsp;";
     
-    if (members[i].youtube != undefined && members[i].youtube.length > 0)
-      content = content + "<a target='_blank' href='https://youtube.com/" + members[i].youtube + "'><img src='img/youtube.png' style='height:24px; width:24px; padding-bottom:2px'></span></a>&nbsp;&nbsp;";
+    if (members[0].youtube != undefined && members[0].youtube.length > 0)
+      content = content + "<a target='_blank' href='https://youtube.com/" + members[0].youtube + "'><img src='img/youtube.png' style='height:24px; width:24px; padding-bottom:2px'></span></a>&nbsp;&nbsp;";
     
     content = content + "</div>";
     
-    $("#divMember" + i).empty().append(content);
+    $("#divMember0").empty().append(content);
     
-    if (members[i].party == "D")
-      $("#divMember" + i).attr("class", "col-md-5 democrat");
-    else if (members[i].party == "R")  
-      $("#divMember" + i).attr("class", "col-md-5 republican");
+    if (members[0].party == "D")
+      $("#divMember0").attr("class", "col-md-5 democrat");
+    else if (members[0].party == "R")  
+      $("#divMember0").attr("class", "col-md-5 republican");
     else
-      $("#divMember" + i).attr("class", "col-md-5 default");
- // }  
+      $("#divMember0").attr("class", "col-md-5 default");
 }
 
 // Voting record and extra bio information
 function getMemberInfo(member_id) {
   console.log(member_id);
-  var i = 0;
   $.ajax({
     url: "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/members/" + member_id + ".json?api-key=" + auth.congress_api_key,
     type: "GET", 
@@ -574,13 +570,13 @@ function getMemberInfo(member_id) {
     success: function(data) {
       var member = data.results[0];
 
-      members[i].dob = member["date_of_birth"];
-      members[i].url = member["url"];
-      members[i].twitter = member["twitter_account"];
-      members[i].facebook = member["facebook_account"];
-      members[i].youtube = member["youtube_account"];
-      members[i].most_recent_vote = member["most_recent_vote"];
-      members[i].loaded = true;
+      members[0].dob = member["date_of_birth"];
+      members[0].url = member["url"];
+      members[0].twitter = member["twitter_account"];
+      members[0].facebook = member["facebook_account"];
+      members[0].youtube = member["youtube_account"];
+      members[0].most_recent_vote = member["most_recent_vote"];
+      members[0].loaded = true;
 
       var roles = [];
       $.each(member["roles"], function(i, role) {
@@ -607,8 +603,8 @@ function getMemberInfo(member_id) {
         // will update it to index.html tomorrow
         //console.log(members[i])
         
-      $("#spnMember" + i).attr("class", 'glyphicon glyphicon-collapse-down');
-      $("#divMemberDetail" + i).slideDown("slow");
+      $("#spnMember0").attr("class", 'glyphicon glyphicon-collapse-down');
+      $("#divMemberDetail0").slideDown("slow");
       
       renderMembers();      
       renderMemberVotes(member_roles);
@@ -698,16 +694,16 @@ function btnVoteOnClick() {
   }
 }
  
-function btnMemberOnClick(i) {
-  if (members[i].expanded) {
-    members[i].expanded = false;
-    $("#spnMember" + i).attr("class", 'glyphicon glyphicon-expand');
-    $("#divMemberDetail" + i).slideUp("slow");
+function btnMemberOnClick() {
+  if (members[0].expanded) {
+    members[0].expanded = false;
+    $("#spnMember0").attr("class", 'glyphicon glyphicon-expand');
+    $("#divMemberDetail0").slideUp("slow");
   }
   else {
-    members[i].expanded = true;
-    $("#spnMember" + i).attr("class", 'glyphicon glyphicon-collapse-down');
-    $("#divMemberDetail" + i).slideDown("slow");
+    members[0].expanded = true;
+    $("#spnMember0").attr("class", 'glyphicon glyphicon-collapse-down');
+    $("#divMemberDetail0").slideDown("slow");
   }
 }
 
