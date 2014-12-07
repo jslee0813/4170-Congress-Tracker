@@ -642,7 +642,7 @@ function renderMemberVotes(member_roles){
                 <div id='divVoteDetail'" + show_content;
 
     if (member_roles.most_recent_vote != undefined && member_roles.most_recent_vote.length > 0) {
-      content += "<label>Most Recent Vote:&nbsp;&nbsp;&nbsp;</label><text>&nbsp;&nbsp;&nbsp;" + member_roles.most_recent_vote+ "</text></br>";
+      content += "<label>Most Recent Vote:&nbsp;&nbsp;&nbsp;</label><text>&nbsp;&nbsp;&nbsp;" + formatDate(member_roles.most_recent_vote) + "</text></br>";
     }
 
   $.each(member_roles.roles, function(i, role) {
