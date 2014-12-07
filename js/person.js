@@ -1,10 +1,10 @@
 // API keys
 var auth = {
   version: "v3",
-  campaign_finance_api_key: "",
-  congress_api_key: "",
-  times_newswire_api_key: "",
-  article_search_api_key: "",
+  campaign_finance_api_key: "693917afeaba58fde1552a6732852e9c:18:70213515",
+  congress_api_key: "eab06b972a38a20d0e58eb3d8cdc7c58:7:70213515",
+  times_newswire_api_key: "79e51b60c583682981c77388db8f55d9:10:70213515",
+  article_search_api_key: "9e9d9f28b5f5b62d79968c128fdf7a66:9:70213515",
 }
 
 var members = [];
@@ -13,7 +13,6 @@ var member_roles = [];
 $(document).ready(function() {
   addFavs();
   getMemberBio();
-
 });
 
 $(document).keydown(function(key) {
@@ -318,11 +317,14 @@ function getMemberBio() {
       
   if (chamber == "house")
   {
-    var district = store.get("district").toLowerCase();
+    district = store.get("district").toLowerCase();
     url = "http://api.nytimes.com/svc/politics/" + auth.version + "/us/legislative/congress/members/" + chamber + "/" + state + "/" + district + "/current.json?api-key=" + auth.congress_api_key;
   }
   else
+  {
+    //district = "1";
     url = "http://api.nytimes.com/svc/politics/" + auth.version + "/us/legislative/congress/members/" + chamber + "/" + state + "/current.json?api-key=" + auth.congress_api_key;
+  }
 
   $.ajax({
     url: url,
@@ -436,7 +438,8 @@ function favSelected(name)
   //Todo: set the store valuse used for search and reload the page.
   store.set("state", member.state);
   store.set("chamber", member.chamber);
-  store.set("district", member.district);   
+  store.set("district", member.district.toString()); 
+  store.set("senator", name);  
 }
 
 function renderMembers() {
