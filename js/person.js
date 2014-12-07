@@ -1,14 +1,15 @@
 // API keys
 var auth = {
   version: "v3",
-  campaign_finance_api_key: "",
-  congress_api_key: "",
-  times_newswire_api_key: "",
-  article_search_api_key: ""
+  campaign_finance_api_key: "69769739adad5ec9e5044090d867a62e:14:70154539",
+  congress_api_key: "96625a843db6b50dcdb259b94e281246:8:70154539",
+  times_newswire_api_key: "4f54e9027e2dfda5b275fdb8ddd93ba4:18:70154539",
+  article_search_api_key: "1e94e0ac552a0041906f50590784f934:9:70154539",
 }
 
 var members = [];
 var member_roles = [];
+var bill_api_call = 0;
 
 $(document).ready(function() {
   addFavs();
@@ -148,7 +149,6 @@ function getCampaignFinance(i) {
   })
 }
 
-// TODO: Make it so you can collapse Bills?
 // Bill display code - Lindsay
 function displayBills(member_id) {
   $('#billSection').empty();
@@ -374,7 +374,6 @@ function getMemberBio() {
 
       getCampaignFinance(0)
       getMemberInfo(members[0].id);
-      //displayBills(members[0].id);
       displayArticles();
     },
     error: function() {
@@ -706,6 +705,23 @@ function btnArticleOnClick(){
   {
       $("#spnArticle").attr("class", "glyphicon glyphicon-expand");
       $("#articleSection").slideUp("slow");
+  }
+}
+
+// collapsing function for the bills section
+function btnBillOnClick(){
+  if(document.getElementById("spnBill").getAttribute("class") == "glyphicon glyphicon-expand") {
+      $("#spnBill").attr("class", "glyphicon glyphicon-collapse-down");
+      $("#billSection").slideDown("medium");
+
+      if (bill_api_call == 0) {
+        bill_api_call = 1;
+        displayBills(members[0].id);
+      }
+  }
+  else {
+      $("#spnBill").attr("class", "glyphicon glyphicon-expand");
+      $("#billSection").slideUp("fast");
   }
 }
 

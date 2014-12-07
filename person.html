@@ -40,23 +40,23 @@
       </div>      
     </div>
 
-    <!-- Favorite star goes here? -->
     <div class="col-md-12"><h2 id='bio_name' style='text-align: center; font-size: 40pt;'></h2></div>
 
     <div class="panel-body" id="divBody">
+      <div class="col-md-12"><hr></div>
       <div class="container">
-        <div class="row">
-          
-        </div>
         <div class="row" style="padding-top:10px">        
           <div class="col-md-5" id="divMember0"></div>
           <div class="col-md-2"></div>
           <div class="col-md-5" id="divMember1"></div>
-          <div class="col-md-12"><hr></div>
         </div>
       </div>
       <div class="page-header" id="billSectionHead">
-        <h2>Bills</h2>
+        <h2>Bills
+          <button id='btnBill' style='outline:0' class='btn btn-link btn-xs' onclick='btnBillOnClick()'>
+            <span id='spnBill' class='glyphicon glyphicon-expand' aria-hidden='true' style='font-size:18px'></span>
+          </button>
+        </h2>
       </div>
       <div class="row" id="billSection"></div>
       <div class="page-header" id="articleSectionHead">
