@@ -696,6 +696,20 @@ function renderMemberVotes(member_roles){
     $("#divMember1").attr("class", "col-md-5 default");
 }
 
+//collapsing function for the news articles section
+function btnArticleOnClick(){
+  if(document.getElementById("spnArticle").getAttribute("class") == "glyphicon glyphicon-expand")
+  {
+      $("#spnArticle").attr("class", "glyphicon glyphicon-collapse-down");
+      $("#articleSection").slideDown("slow");
+  }
+  else
+  {
+      $("#spnArticle").attr("class", "glyphicon glyphicon-expand");
+      $("#articleSection").slideUp("slow");
+  }
+}
+
 function btnVoteOnClick() {
   if (!member_roles.expanded) {
     member_roles.expanded = true;

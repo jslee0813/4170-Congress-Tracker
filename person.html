@@ -60,9 +60,15 @@
       </div>
       <div class="row" id="billSection"></div>
       <div class="page-header" id="articleSectionHead">
-        <h2>In The News</h2>
+        <h2>In The News 
+            <button id='btnVote' style='outline:0' class='btn btn-link btn-xs' onclick='btnArticleOnClick()'>
+                <span id='spnArticle' class='glyphicon glyphicon-expand' aria-hidden='true' style='font-size:18px'></span>
+            </button>
+        </h2>
       </div>
-      <div class="row" id="articleSection"></div>
+
+
+      <div class="row" id="articleSection" style="display:none"></div>
     </div>
     
     <div class="modal fade" id="mdlSearch" role="dialog">
