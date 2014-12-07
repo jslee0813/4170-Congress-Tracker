@@ -1,10 +1,10 @@
 // API keys
 var auth = {
   version: "v3",
-  campaign_finance_api_key: "69769739adad5ec9e5044090d867a62e:14:70154539",
-  congress_api_key: "96625a843db6b50dcdb259b94e281246:8:70154539",
-  times_newswire_api_key: "4f54e9027e2dfda5b275fdb8ddd93ba4:18:70154539",
-  article_search_api_key: "1e94e0ac552a0041906f50590784f934:9:70154539",
+  campaign_finance_api_key: "",
+  congress_api_key: "",
+  times_newswire_api_key: "",
+  article_search_api_key: "",
 }
 
 var members = [];
@@ -476,7 +476,7 @@ function showFavButton()
 function renderMembers() {
   //for (var i = 0; i < members.length; i++) {
     var i = 0;
-    var content = "<p><button id='btnMember" + i + "' style='outline:0' class='btn btn-link btn-xs' onclick='btnMemberOnClick(" + i + ")'> \
+    var content = "<p><span style='font-size:18px'>Bio</span>&nbsp;&nbsp;<button id='btnMember" + i + "' style='outline:0' class='btn btn-link btn-xs' onclick='btnMemberOnClick(" + i + ")'> \
         <span id='spnMember" + i + "' class='glyphicon glyphicon-";
   
     if (members[0].expanded) 
@@ -484,7 +484,7 @@ function renderMembers() {
     else
       content = content + "expand";
     
-    content += "' aria-hidden='true' style='font-size:18px'></span></button>&nbsp;&nbsp;<span style='font-size:18px'>Bio</span>";
+    content += "' aria-hidden='true' style='font-size:18px'></span></button>";
                 
     content = content + "<div id='divMemberDetail0'";
       
@@ -636,14 +636,13 @@ function renderMemberVotes(member_roles){
     exp_or_col = "collapse-down"
   }
 
-  var content = "<p><button id='btnVote' style='outline:0' class='btn btn-link btn-xs' onclick='btnVoteOnClick()'> \
+  var content = "<p><span style='font-size:18px'>Voting Record</span>&nbsp;&nbsp;<button id='btnVote' style='outline:0' class='btn btn-link btn-xs' onclick='btnVoteOnClick()'> \
                 <span id='spnVote' class='glyphicon glyphicon-"+ exp_or_col + "' aria-hidden='true' style='font-size:18px'></span> \
-                </button>&nbsp;&nbsp;<span style='font-size:18px'>Voting Record</span></p>\
-                <div id='divVoteDetail'" + show_content;
+                </button></p><div id='divVoteDetail'" + show_content;
 
-    if (member_roles.most_recent_vote != undefined && member_roles.most_recent_vote.length > 0) {
-      content += "<label>Most Recent Vote:&nbsp;&nbsp;&nbsp;</label><text>&nbsp;&nbsp;&nbsp;" + formatDate(member_roles.most_recent_vote) + "</text></br>";
-    }
+  if (member_roles.most_recent_vote != undefined && member_roles.most_recent_vote.length > 0) {
+    content += "<label>Most Recent Vote:&nbsp;&nbsp;&nbsp;</label><text>&nbsp;&nbsp;&nbsp;" + formatDate(member_roles.most_recent_vote) + "</text></br>";
+  }
 
   $.each(member_roles.roles, function(i, role) {
 
