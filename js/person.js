@@ -4,7 +4,7 @@ var auth = {
   campaign_finance_api_key: "",
   congress_api_key: "",
   times_newswire_api_key: "",
-  article_search_api_key: ""
+  article_search_api_key: "",
 }
 
 var members = [];
@@ -363,10 +363,12 @@ function getMemberBio() {
           if (member.name.toLowerCase() == senator) {
             members[0] = member;
             $("#bio_name").text(member.name);
+            showFavButton();
           }
         } else {
           members[0] = member;
           $("#bio_name").text(member.name);
+          showFavButton();
         }
       });
 
@@ -390,12 +392,14 @@ function btnFavoriteOnClick(i)
   if(favs[members[i].name])
   {
     $("#spnFav" + i).attr('class', "glyphicon glyphicon-star-empty star");
+    $("#spnFav" + i).attr('title', "Add to Favorites");
     delete favs[members[i].name];
   }
   else
   {
     favs[members[i].name] = members[i];
     $("#spnFav" + i).attr('class', "glyphicon glyphicon-star star");
+    $("#spnFav" + i).attr('title', "Remove from Favorites");
   }
 
   store.set('favorites', favs);
@@ -436,16 +440,16 @@ function favSelected(name)
   //Todo: set the store valuse used for search and reload the page.
   store.set("state", member.state);
   store.set("chamber", member.chamber);
-  store.set("district", member.district.toString()); 
+  if(member.district)
+    store.set("district", member.district.toString()); 
+  else
+    store.set("district", "1");
   store.set("senator", name);  
 }
 
-function renderMembers() {
-  //for (var i = 0; i < members.length; i++) {
-    var i = 0;
-    var content = "<p><button id='btnMember" + i + "' style='outline:0' class='btn btn-link btn-xs' onclick='btnMemberOnClick(" + i + ")'> \
-        <span id='spnMember" + i + "' class='glyphicon glyphicon-";
-  
+function showFavButton()
+{
+
     var favs = store.get("favorites");
     var tooltip;
     var glyph;
@@ -453,6 +457,9 @@ function renderMembers() {
     {
       favs = {};
     }
+    
+    var i = 0;
+
     if(favs[members[i].name])
     {
       tooltip = "Remove from Favorites";
@@ -463,15 +470,24 @@ function renderMembers() {
       tooltip = "Add to Favorites"
       glyph = "glyphicon-star-empty";
     }
+    $("#bio_name").append("<button id='btnFavorite" + i + "' title='" + tooltip + "' style='outline:0' class = 'btn btn-link btn-xs' onclick='btnFavoriteOnClick(" + i + ")'> \
+                <span id='spnFav" + i + "' class='glyphicon " + glyph + " star' style='font-size:40px'></span></button></p>");
+}
+
+function renderMembers() {
+  //for (var i = 0; i < members.length; i++) {
+    var i = 0;
+    var content = "<p><button id='btnMember" + i + "' style='outline:0' class='btn btn-link btn-xs' onclick='btnMemberOnClick(" + i + ")'> \
+        <span id='spnMember" + i + "' class='glyphicon glyphicon-";
+  
 
     if (members[i].expanded) 
       content = content + "collapse-down";
     else
       content = content + "expand";
     
-    content += "' aria-hidden='true' style='font-size:18px'></span></button>&nbsp;&nbsp;<span style='font-size:18px'>Bio</span> \
-                <button id='btnFavorite" + i + "' title='" + tooltip + "' style='outline:0' class = 'btn btn-link btn-xs' onclick='btnFavoriteOnClick(" + i + ")'> \
-                <span id='spnFav" + i + "' class='glyphicon " + glyph + " star' style='font-size:18px'></span></button></p>";
+    content += "' aria-hidden='true' style='font-size:18px'></span></button>&nbsp;&nbsp;<span style='font-size:18px'>Bio</span>";
+                
 
 
 
