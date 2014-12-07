@@ -187,6 +187,39 @@ function btnSearchOnClick() {
 }
 
 function cboStateOnChange() {
+  loadHouse();
+  loadSenate();
+
+  enableDisableFields();
+}
+
+function cboChamberOnChange() {
+  loadHouse();
+  loadSenate();
+
+  if ($("#cboChamber").val().toLowerCase() == 'house') {
+    $("#divSenator").hide();
+    $("#cboSenator").hide();
+
+    $("#divDistrict").show();
+    $("#cboDistrict").show();
+  } else if ($("#cboChamber").val().toLowerCase() == 'senate') {
+    $("#divDistrict").hide();
+    $("#cboDistrict").hide();
+
+    $("#divSenator").show();
+    $("#cboSenator").show();
+  } else {
+    $("#divDistrict").hide();
+    $("#divSenator").hide();
+    $("#cboDistrict").hide();
+    $("#cboSenator").hide();
+  }
+
+  enableDisableFields();
+}
+
+function loadHouse() {
   var count = 0;
   
   if ($("#cboState").val().length > 0) {
@@ -251,16 +284,14 @@ function cboStateOnChange() {
   }
   
   for (var i = 1; i <= count; i ++) {    
-    $('#cboDistrict').append($("<option>", {
+    $("#cboDistrict").append($("<option>", {
       value: i,
       text: i
     }));
   }
-
-  enableDisableFields();
 }
 
-function cboChamberOnChange() {
+function loadSenate() {
   var one = "";
   var two = "";
 
@@ -334,8 +365,6 @@ function cboChamberOnChange() {
       value: two,
       text: two
     }));
-
-  enableDisableFields();
 }
 
 function cboDistrictOnChange() {
