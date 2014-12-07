@@ -322,7 +322,6 @@ function getMemberBio() {
   }
   else
   {
-    //district = "1";
     url = "http://api.nytimes.com/svc/politics/" + auth.version + "/us/legislative/congress/members/" + chamber + "/" + state + "/current.json?api-key=" + auth.congress_api_key;
   }
 
@@ -332,7 +331,6 @@ function getMemberBio() {
 		dataType: "json",
 		cache: true,
     success: function(data) {
-      console.log(data);
       $("#bio_name").empty();
 
       $.each(data["results"], function(i, result) {
@@ -574,7 +572,6 @@ function renderMembers() {
 
 // Voting record and extra bio information
 function getMemberInfo(member_id) {
-  console.log(member_id);
   $.ajax({
     url: "http://api.nytimes.com/svc/politics/v3/us/legislative/congress/members/" + member_id + ".json?api-key=" + auth.congress_api_key,
     type: "GET", 
@@ -728,12 +725,12 @@ function btnVoteOnClick() {
   if (!member_roles.expanded) {
     member_roles.expanded = true;
     $("#spnVote").attr("class", 'glyphicon glyphicon-collapse-down');
-    $("#divVoteDetail").slideDown("slow");
+    $("#divVoteDetail").slideDown("medium");
   }
   else {
     member_roles.expanded = false;
     $("#spnVote").attr("class", 'glyphicon glyphicon-expand');
-    $("#divVoteDetail").slideUp("slow");
+    $("#divVoteDetail").slideUp("fast");
   }
 }
  
