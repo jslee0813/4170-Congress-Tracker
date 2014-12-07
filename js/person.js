@@ -1,10 +1,10 @@
 // API keys
 var auth = {
   version: "v3",
-  campaign_finance_api_key: "",
-  congress_api_key: "",
-  times_newswire_api_key: "",
-  article_search_api_key: ""
+  campaign_finance_api_key: "69769739adad5ec9e5044090d867a62e:14:70154539",
+  congress_api_key: "96625a843db6b50dcdb259b94e281246:8:70154539",
+  times_newswire_api_key: "4f54e9027e2dfda5b275fdb8ddd93ba4:18:70154539",
+  article_search_api_key: "1e94e0ac552a0041906f50590784f934:9:70154539"
 }
 
 var members = [];
@@ -69,97 +69,83 @@ $(document).keydown(function(key) {
 function intToDollar(num) {
     return "$" + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-
 // get campaign finance details by member 
-function getCampaignFinance() {
-  var length = members.length
-  var state = store.get("state").toUpperCase();
-  var chamber = store.get("chamber").toLowerCase();
-  var district = store.get("district").toLowerCase();
+function getCampaignFinance(i) {
+  name = members[i].name
+  temp_name = name.split(" ")
+  first_name = temp_name[0].toUpperCase()
+  last_name = temp_name[temp_name.length -1].toUpperCase()
 
-  for (var i = 0; i < length; i++){
-    (function (i){
-      var member = members[i]
-      var name = member['name']
-      var split_name = name.split(" ")
-      if (split_name.length == 2){
-        var first_name = split_name[0].toUpperCase()
-        var last_name = split_name[1].toUpperCase()
-      }
-      else {
-        var first_name = split_name[0].toUpperCase()
-        var last_name = split_name[split_name.length - 1].toUpperCase()
-      }
+  // to calculate the year that the member was elected, find the next election year possible and subtract 6 for Senate
+  // if House, leave as 2014, all House members were elected/re-elected in 2014
+  year = members[i].next_election
 
-      // set the campaign year cycle 
-      var next_campaign_year = member['next_election']
-      // if chamber is senate, set district number to 1 
-      if (!district)
+  // set district for senate to 1, NYT API has bug that requires district for some Senate members 
+  if (members[i].chamber == "senate") 
+  {
+    members[i].district = 1
+    year = year - 6
+  }
+  else
+  {
+    year = 2014
+  }
+  members[i].financial_campaign_cycle = year
+  $.ajax
+  ({
+    url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + members[i].financial_campaign_cycle + "/seats/" + members[i].state + "/" + members[i].chamber + "/" + members[i].district + ".json?api-key=" + auth.campaign_finance_api_key,
+    type: "GET", 
+    dataType: "jsonp", 
+    cache: true, 
+    success: function(data)
+    {
+      $.each(data["results"], function(j, result) 
       {
-        district = 1
-      }
-      if (chamber == "senate") {
-        var campaign_cycle_year = next_campaign_year - 6
-      }
-      else {
-        var campaign_cycle_year = 2014 
-      }
-      members[i].campaign_cycle_year = campaign_cycle_year
-      $.ajax ({
-        url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + campaign_cycle_year + "/seats/" + state + "/" + chamber + "/" + district + ".json?api-key=" + auth.campaign_finance_api_key,
-        type: "GET", 
-        dataType: "jsonp", 
-        cache: true, 
-        success: function(data)
+        candidate_name = result['candidate']['name'].split(", ")
+        if (candidate_name.length > 1)
         {
-          $.each(data["results"], function(index, result) 
-          {
-            var candidate_name = result['candidate']['name'].split(", ")
-            // parse name 
-            if (candidate_name.length > 1)
+          candidate_last_name = candidate_name[0].toUpperCase()
+          candidate_first_name = candidate_name[1].split(" ")[0].toUpperCase()
+        }
+        else
+        {
+          candidate_last_name = candidate_name[0].toUpperCase()
+          candidate_first_name = ""
+        }
+        if (candidate_last_name == last_name && candidate_first_name == first_name)
+        {
+          members[i].fec_id = result['candidate']['id']
+          $.ajax
+          ({
+            url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + members[i].financial_campaign_cycle + "/candidates/" + members[i].fec_id + ".json?api-key=" + auth.campaign_finance_api_key, 
+            type: "GET", 
+            dataType: "jsonp",
+            cache: true, 
+            success: function(data)
             {
-              var candidate_last_name = candidate_name[0].toUpperCase()
-              var candidate_first_name = candidate_name[1].split(" ")[0].toUpperCase()
-            }
-            else
-            {
-              var candidate_last_name = candidate_name[0].toUpperCase()
-              var candidate_first_name = ""
-            }
-            if (candidate_last_name == last_name && candidate_first_name == first_name)
-            {
-              var fec_id = result['candidate']['id']
-              members[i].fec_id = fec_id
-              $.ajax
-              ({
-                url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + campaign_cycle_year + "/candidates/" + fec_id + ".json?api-key=" + auth.campaign_finance_api_key, 
-                type: "GET", 
-                dataType: "jsonp",
-                cache: true, 
-                success: function(data)
-                {
-                  response = data['results'][0]
-                  members[i].total_contributions = intToDollar(response['total_contributions'])
-                  members[i].total_disbursements = intToDollar(response['total_disbursements'])
-                  members[i].total_from_individuals = intToDollar(response['total_from_individuals'])
-                  members[i].total_from_pacs = intToDollar(response['total_from_pacs'])
-                  members[i].total_receipts = intToDollar(response['total_receipts'])
-                  members[i].total_refunds = intToDollar(response['total_refunds'])
-                },
-                error: function(error){
-                  console.log(error)
-                }
-              })
+              response = data['results'][0]
+              members[i].fec_url = response['fec_uri']
+              members[i].total_contributions = intToDollar(response['total_contributions'])
+              members[i].total_disbursements = intToDollar(response['total_disbursements'])
+              members[i].total_from_individuals = intToDollar(response['total_from_individuals'])
+              members[i].total_from_pacs = intToDollar(response['total_from_pacs'])
+              members[i].total_receipts = intToDollar(response['total_receipts'])
+              members[i].total_refunds = intToDollar(response['total_refunds'])
+            },
+            error: function(error){
+              console.log(error)
             }
           })
-        },
-        error: function(error)
-        {
-          $('#').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see financial information.</div>");
         }
       })
-    })(i);
-  }
+    }, 
+    error: function(error)
+    {
+      $('#').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see financial information.</div>");
+
+      console.log(error)
+    }
+  })
 }
 
 // TODO: Make it so you can collapse Bills?
@@ -340,7 +326,6 @@ function getMemberBio() {
     url = "http://api.nytimes.com/svc/politics/" + auth.version + "/us/legislative/congress/members/" + chamber + "/" + state + "/current.json?api-key=" + auth.congress_api_key;
   }
 
-  $("#bio_name").append("Retrieving information from NYT API...");
   $.ajax({
     url: url,
 		type: "get",
@@ -384,8 +369,8 @@ function getMemberBio() {
           $("#bio_name").text(member.name);
         }
       });
-      
-      getCampaignFinance()
+
+      getCampaignFinance(0)
       getMemberInfo(members[0].id);
       displayBills(members[0].id);
       displayArticles();
@@ -433,6 +418,12 @@ function addFavs()
     {
       content += "<li><a href='person.html' onclick='favSelected(\"" + f + "\")'>" + f +"</a></li>"
     }
+  }
+
+  // Add help information if no favorites
+  if (content == "") {
+    content = "<li class='info'>To add a Member of Congress to your favorites, click on the star next to their name on their personal page. \
+              See Help for more details</li>"
   }
   $('#dboFav').empty().append(content);
 
@@ -609,6 +600,12 @@ function getMemberInfo(member_id) {
         most_recent_vote: member.most_recent_vote,
         roles: roles
       };
+         
+      // getCampaignFinance(members[i]);   
+        // renderMembers(i);
+        // uncomment the console.log(members[i]) to see campaign finance being logged to console
+        // will update it to index.html tomorrow
+        //console.log(members[i])
         
       $("#spnMember" + i).attr("class", 'glyphicon glyphicon-collapse-down');
       $("#divMemberDetail" + i).slideDown("slow");
