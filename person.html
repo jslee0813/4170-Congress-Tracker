@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<divDOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -138,19 +138,19 @@
                   </select>
                 </div>                
               </div>
-              <div class="form-group">
+              <div id='divSenator' class="form-group" style='display: none'>
                 <label for="txtUsername" class="col-sm-3 control-label">Senator:</label>
                 <div class="col-sm-9">
                   <select class="form-control" id="cboSenator" disabled="true" onchange="cboSenatorOnChange()">
                   </select>
                 </div>                
               </div>
-              <div class="form-group">
+              <div id='divDistrict' class="form-group" style='display:none'>
                 <label for="dteUploadedSince" class="col-sm-3 control-label">District:</label>
                 <div class="col-sm-9" id="datepicker">
                   <select class="form-control" id="cboDistrict" disabled="true" onchange="cboDistrictOnChange()">
                   </select>
-                </div>               
+                </div>
               </div>                        
             </div>
             <div class="modal-footer">
@@ -176,22 +176,25 @@
               <br/>
 
               <h4 id="help_bio">Find a Member of Congress's biographical information:</h4>
-              <p>TODO: <br>Navigate to the page of the Member of Congress whose voting record you wish to see (<a href="#help_search">Search for a Member of Congress</a>).  <br><br>
-If the New York Times API provides the homepage, twitter accounts, facebook accounts, or youtube accounts for the Member of Congress then the corresponding icons will be shown, so the user can navigate to any of these pages.
-              </p>
+              <p>Navigate to the page of the Member of Congress whose voting record you wish to see (<a href="#help_search">Search for a Member of Congress</a>).  On the left side of the results page is a colored box labelled  <span style='font-size:16px'>Bio</span>. Click on the button with the blue triangle (<button id='btnVote' style='outline:0' class='btn btn-link btn-xs'><span id='spnVote' class='glyphicon glyphicon-expand' aria-hidden='true' style='font-size:16px'></span></button>) that is to the left of this label to show the biographical and campaign finance information for the Member of Congress. If the New York Times API provides the homepage, twitter, facebook, or youtube accounts for the Member of Congress then the corresponding icons will be shown to allow you to navigate to any of these pages. To minimize this information, click on the button with the blue triangle (<button id='btnVote' style='outline:0' class='btn btn-link btn-xs'><span id='spnVote' class='glyphicon glyphicon-collapse-down' aria-hidden='true' style='font-size:16px'></span></button>) that is to the left of the label <span style='font-size:16px'>Bio</span>.</p>
+              <br/>
+
+              <h4 id="help_finance">Find a Member of Congress's campaign finances:</h4>
+              <p>Search for the Congressman or Senator you wish to see (<a href="#help_search">Search for a Member of Congress</a>). Under the individual's biography, you will find financial data about this member of Congress' campaign finances during his or her last campaign. This includes data such as total contributions, disbursements, and receipts from this Congress member's last campaign for election. </p>
               <br/>
 
               <h4 id="help_voting">Find a Member of Congress's voting record:</h4>
               <p>Navigate to the page of the Member of Congress whose voting record you wish to see (<a href="#help_search">Search for a Member of Congress</a>).  On the right side of the results page is a colored box labelled  <span style='font-size:16px'>Voting Record</span>. Click on the button with the blue triangle (<button id='btnVote' style='outline:0' class='btn btn-link btn-xs'><span id='spnVote' class='glyphicon glyphicon-expand' aria-hidden='true' style='font-size:16px'></span></button>) that is to the left of this label to show the voting record and number of bills for the Member of Congress. These statistics are broken down by the session of Congress. For example, the label <label>113 House</label> specifies the voting and bill information for the Member of Congress during the 113th United States Congress in the House of Representatives. To minimize this information, click on the button with the blue triangle (<button id='btnVote' style='outline:0' class='btn btn-link btn-xs'><span id='spnVote' class='glyphicon glyphicon-collapse-down' aria-hidden='true' style='font-size:16px'></span></button>) that is to the left of the label <span style='font-size:16px'>Voting Record</span>.</p>
               <br/>
 
-              <h4 id="help_finance">Find informatation about a Member of Congress's campaign finances:</h4>
-              <p>Search for the Congressman or Senator you wish to see (<a href="#help_search">Search for a Member of Congress</a>). Under the individual's biography, you will find financial data about this member of Congress' campaign finances during his or her last campaign. This includes data such as total contributions, disbursements, and receipts from this Congress member's last campaign for election. </p>
+              <h4 id="help_favorite">Add a Member of Congress to your favorites:</h4>
+              <p>Search for the representative that you want to favorite.  From the persons page click the gold star next to their name. If the star is empty then the Congress person is not favorited.  If the star is full then they are favorited. In this case clicking the star will remove them from favorites.<br><br>
+                To navigate to a favorite repressentatives page click the favorites drop down from the navigation bar.  This will show a list of people you have favorited.  Clicking on a name will navigate to their page.
+              </p>
               <br/>
 
-              <h4 id="help_favorite">Add a Member of Congress to your favorites:</h4>
-              <p>TODO</p>
-              <br/>
+              <h4 id="help_article">Find news articles on Members of Congress:</h4>
+              <p>On a Congress Member's page (<a href="#help_search">Search for a Member of Congress</a>), you will find relevant news articles on that member from the past year. When you add a member to your favorites (<a href="#help_favorite">Add a Member of Congress to your favorites</a>), you will see news articles relevant to your favorite members on the home page. With no favorites, general news articles pertaining to the U.S. Congress from the past year will appear on the home page.
 
             <div class="modal-footer">
               <a class="btn btn-default" data-dismiss="modal" id="btnHelpClose"><u>C</u>lose</a>

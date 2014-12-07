@@ -95,7 +95,8 @@ function favSelected(name)
   //Todo: set the store valuse used for search and reload the page.
   store.set("state", member.state);
   store.set("chamber", member.chamber);
-  store.set("district", member.district);   
+  store.set("district", member.district.toString()); 
+  store.set("senator", name);  
 }
 
 //Article display code --Connor
@@ -185,6 +186,39 @@ function btnSearchOnClick() {
 }
 
 function cboStateOnChange() {
+  loadHouse();
+  loadSenate();
+
+  enableDisableFields();
+}
+
+function cboChamberOnChange() {
+  loadHouse();
+  loadSenate();
+
+  if ($("#cboChamber").val().toLowerCase() == 'house') {
+    $("#divSenator").hide();
+    $("#cboSenator").hide();
+
+    $("#divDistrict").show();
+    $("#cboDistrict").show();
+  } else if ($("#cboChamber").val().toLowerCase() == 'senate') {
+    $("#divDistrict").hide();
+    $("#cboDistrict").hide();
+
+    $("#divSenator").show();
+    $("#cboSenator").show();
+  } else {
+    $("#divDistrict").hide();
+    $("#divSenator").hide();
+    $("#cboDistrict").hide();
+    $("#cboSenator").hide();
+  }
+
+  enableDisableFields();
+}
+
+function loadHouse() {
   var count = 0;
   
   if ($("#cboState").val().length > 0) {
@@ -249,16 +283,14 @@ function cboStateOnChange() {
   }
   
   for (var i = 1; i <= count; i ++) {    
-    $('#cboDistrict').append($("<option>", {
+    $("#cboDistrict").append($("<option>", {
       value: i,
       text: i
     }));
   }
-
-  enableDisableFields();
 }
 
-function cboChamberOnChange() {
+function loadSenate() {
   var one = "";
   var two = "";
 
@@ -332,8 +364,6 @@ function cboChamberOnChange() {
       value: two,
       text: two
     }));
-
-  enableDisableFields();
 }
 
 function cboDistrictOnChange() {
