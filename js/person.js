@@ -4,7 +4,7 @@ var auth = {
   campaign_finance_api_key: "",
   congress_api_key: "",
   times_newswire_api_key: "",
-  article_search_api_key: "",
+  article_search_api_key: ""
 }
 
 var members = [];
@@ -374,7 +374,7 @@ function getMemberBio() {
 
       getCampaignFinance(0)
       getMemberInfo(members[0].id);
-      displayBills(members[0].id);
+      //displayBills(members[0].id);
       displayArticles();
     },
     error: function() {
@@ -480,7 +480,6 @@ function renderMembers() {
     var content = "<p><button id='btnMember" + i + "' style='outline:0' class='btn btn-link btn-xs' onclick='btnMemberOnClick(" + i + ")'> \
         <span id='spnMember" + i + "' class='glyphicon glyphicon-";
   
-
     if (members[0].expanded) 
       content = content + "collapse-down";
     else
@@ -488,7 +487,7 @@ function renderMembers() {
     
     content += "' aria-hidden='true' style='font-size:18px'></span></button>&nbsp;&nbsp;<span style='font-size:18px'>Bio</span>";
                 
-    content = content + "<div id='divMemberDetaili'";
+    content = content + "<div id='divMemberDetail0'";
       
     if (members[0].expanded) 
       content = content + ">";
