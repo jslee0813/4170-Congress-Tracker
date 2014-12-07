@@ -60,9 +60,15 @@
       </div>
       <div class="row" id="billSection"></div>
       <div class="page-header" id="articleSectionHead">
-        <h2>In The News</h2>
+        <h2>In The News 
+            <button id='btnVote' style='outline:0' class='btn btn-link btn-xs' onclick='btnArticleOnClick()'>
+                <span id='spnArticle' class='glyphicon glyphicon-expand' aria-hidden='true' style='font-size:18px'></span>
+            </button>
+        </h2>
       </div>
-      <div class="row" id="articleSection"></div>
+
+
+      <div class="row" id="articleSection" style="display:none"></div>
     </div>
     
     <div class="modal fade" id="mdlSearch" role="dialog">
@@ -174,31 +180,31 @@
               <h2>Help</h2>
             </div>
             <div id="divHelpModalBody" style="padding:30px">
-              <h4 id="help_search">Search for a Member of Congress:</h4>
-              <p>Click on the Search link at the top right of the screen (shortcut: Alt + S), to launch the Search dialog. Pick the State and Chamber from the drop down menu. If looking for a member of the House of Representatives, choose the District from the drop down menu. Click on the Search button (shortcut: Alt + S). If looking for a member of the Senate, you will then be asked to choose one of the two Senators from the chosen state. The system will find the congress member that satisfies your search criteria and show the results on a new page. The color scheme of this page corresponds to the party of the Member of Congress: red for Republican, and blue for Democrat.</p>
-              <br/>
-
-              <h4 id="help_bio">Find a Member of Congress's biographical information:</h4>
-              <p>Navigate to the page of the Member of Congress whose voting record you wish to see (<a href="#help_search">Search for a Member of Congress</a>).  On the left side of the results page is a colored box labelled  <span style='font-size:16px'>Bio</span>. Click on the button with the blue triangle (<button id='btnVote' style='outline:0' class='btn btn-link btn-xs'><span id='spnVote' class='glyphicon glyphicon-expand' aria-hidden='true' style='font-size:16px'></span></button>) that is to the left of this label to show the biographical and campaign finance information for the Member of Congress. If the New York Times API provides the homepage, twitter, facebook, or youtube accounts for the Member of Congress then the corresponding icons will be shown to allow you to navigate to any of these pages. To minimize this information, click on the button with the blue triangle (<button id='btnVote' style='outline:0' class='btn btn-link btn-xs'><span id='spnVote' class='glyphicon glyphicon-collapse-down' aria-hidden='true' style='font-size:16px'></span></button>) that is to the left of the label <span style='font-size:16px'>Bio</span>.</p>
-              <br/>
-
-              <h4 id="help_finance">Find a Member of Congress's campaign finances:</h4>
-              <p>Search for the Congressman or Senator you wish to see (<a href="#help_search">Search for a Member of Congress</a>). Under the individual's biography, you will find financial data about this member of Congress' campaign finances during his or her last campaign. This includes data such as total contributions, disbursements, and receipts from this Congress member's last campaign for election. </p>
-              <br/>
-
-              <h4 id="help_voting">Find a Member of Congress's voting record:</h4>
-              <p>Navigate to the page of the Member of Congress whose voting record you wish to see (<a href="#help_search">Search for a Member of Congress</a>).  On the right side of the results page is a colored box labelled  <span style='font-size:16px'>Voting Record</span>. Click on the button with the blue triangle (<button id='btnVote' style='outline:0' class='btn btn-link btn-xs'><span id='spnVote' class='glyphicon glyphicon-expand' aria-hidden='true' style='font-size:16px'></span></button>) that is to the left of this label to show the voting record and number of bills for the Member of Congress. These statistics are broken down by the session of Congress. For example, the label <label>113 House</label> specifies the voting and bill information for the Member of Congress during the 113th United States Congress in the House of Representatives. To minimize this information, click on the button with the blue triangle (<button id='btnVote' style='outline:0' class='btn btn-link btn-xs'><span id='spnVote' class='glyphicon glyphicon-collapse-down' aria-hidden='true' style='font-size:16px'></span></button>) that is to the left of the label <span style='font-size:16px'>Voting Record</span>.</p>
-              <br/>
-
-              <h4 id="help_favorite">Add a Member of Congress to your favorites:</h4>
-              <p>Search for the representative that you want to favorite.  From the persons page click the gold star next to their name. If the star is empty then the Congress person is not favorited.  If the star is full then they are favorited. In this case clicking the star will remove them from favorites.<br><br>
-                To navigate to a favorite repressentatives page click the favorites drop down from the navigation bar.  This will show a list of people you have favorited.  Clicking on a name will navigate to their page.
-              </p>
-              <br/>
-
-              <h4 id="help_article">Find news articles on Members of Congress:</h4>
-              <p>On a Congress Member's page (<a href="#help_search">Search for a Member of Congress</a>), you will find relevant news articles on that member from the past year. When you add a member to your favorites (<a href="#help_favorite">Add a Member of Congress to your favorites</a>), you will see news articles relevant to your favorite members on the home page. With no favorites, general news articles pertaining to the U.S. Congress from the past year will appear on the home page.
-
+              <h4 id = "what_can_i_do">What Can I Do?</h4>
+              <p>Search for a Congressman or Senator to:</p>
+              <ol>
+                <li>View their biography</li>
+                <li>Check out the finances from their last campaign</li>
+                <li>See their voting record</li>
+                <li>Get a list of recent legislative bills introduced</li>
+                <li>Read about them in the New York Times Paper</li>
+              </ol>
+              <h4 id = "how_can_i_do">How Can I Do It?</h4>
+              <p>How to search for a Congressman or Senator:</p>
+              <ol>
+                <li>Click the Search button in the top right corner of the navigation bar. You'll get a popup.</li>
+                <li>Select a state from the "State" dropdown</li>
+                <li>Decide which chamber you'd like to view by choosing either "Senate" or "House" under the "Chamber" dropdown</li>
+                <li>If you chose "House" as the Chamber, you'll get a new popdown bar which will let you pick which specific Congressional District you'd like to view.</li>
+                <li>If you chose "Senate" as the Chamber, you'll also get a new popdown bar which lets you select which of the 2 State Senators you'd lke to view.</li>
+                <li>Hit the "Search" button on the bottom of the pop-up and you're ready to go! </li>
+              </ol>
+              <h4 id = "favorites">Can I Favorite a Congress Member?</h4>
+              <p>Yes! Every Congressman and Senator's page has a star <span id="spnFav" class="glyphicon glyphicon-star star" style="font-size:18px"></span> located next to their name. Click the star to mark them as a "Favorite" and click again to "Unfavorite". Any favorited members of Congress will then be located under the Favorites dropdown in the navigation bar. Click any of the names in the dropdown for direct access to the person's homepage. Every time you login, your homepage will be tailored to the Congress members you've favorited. We'll have the most recent articles related to them in your homepage's News Feed.</p>
+              <h4 id = "shortcuts">Are there any shortcuts?</h4>
+              <p>Of course! Hit Alt-S on your keyboard and you'll get the search box popup ASAP. Also, you can favorite any member of Congress and they'll appear under the favorites bar. You're homepage will also show the latest news articles about anyone you've favorited. </p>
+              <h4 id = "exit">I messed up my search, how can I get back to the homepage?</h4>
+              <p> No worries. Just click on "Congress Tracker" in the top left button of the navigation bar and it'll take you home. Or click <a href="index.html">here</a>. 
             <div class="modal-footer">
               <a class="btn btn-default" data-dismiss="modal" id="btnHelpClose"><u>C</u>lose</a>
             </div>
