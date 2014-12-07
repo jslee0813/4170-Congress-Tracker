@@ -4,7 +4,7 @@ var auth = {
   campaign_finance_api_key: "",
   congress_api_key: "",
   times_newswire_api_key: "",
-  article_search_api_key: "",
+  article_search_api_key: ""
 }
 
 var members = [];
