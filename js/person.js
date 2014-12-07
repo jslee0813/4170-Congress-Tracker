@@ -5,7 +5,6 @@ var auth = {
   congress_api_key: "",
   times_newswire_api_key: "",
   article_search_api_key: "",
-
 }
 
 var members = [];
@@ -384,7 +383,7 @@ function getMemberBio() {
   });
 }
 
-function btnFavoriteOnClick()
+function btnFavoriteOnClick(i)
 {
   var favs = store.get('favorites');
 
@@ -448,16 +447,9 @@ function favSelected(name)
   store.set("senator", name);  
 }
 
-<<<<<<< HEAD
 function showFavButton()
 {
 
-=======
-function renderMembers() {
-    var content = "<p><button id='btnMember0' style='outline:0' class='btn btn-link btn-xs' onclick='btnMemberOnClick()'> \
-        <span id='spnMember0' class='glyphicon glyphicon-";
-  
->>>>>>> 1d5c6d8f3ba8f341f4d20c88afe34c57ffe69c7f
     var favs = store.get("favorites");
     var tooltip;
     var glyph;
@@ -465,14 +457,10 @@ function renderMembers() {
     {
       favs = {};
     }
-<<<<<<< HEAD
     
     var i = 0;
 
     if(favs[members[i].name])
-=======
-    if(favs[members[0].name])
->>>>>>> 1d5c6d8f3ba8f341f4d20c88afe34c57ffe69c7f
     {
       tooltip = "Remove from Favorites";
       glyph = "glyphicon-star";
@@ -498,17 +486,8 @@ function renderMembers() {
     else
       content = content + "expand";
     
-<<<<<<< HEAD
     content += "' aria-hidden='true' style='font-size:18px'></span></button>&nbsp;&nbsp;<span style='font-size:18px'>Bio</span>";
                 
-=======
-    content += "' aria-hidden='true' style='font-size:18px'></span></button>&nbsp;&nbsp;<span style='font-size:18px'>Bio</span> \
-                <button id='btnFavorite0' title='" + tooltip + "' style='outline:0' class = 'btn btn-link btn-xs' onclick='btnFavoriteOnClick()'> \
-                <span id='spnFav0' class='glyphicon " + glyph + " star' style='font-size:18px'></span></button></p>";
->>>>>>> 1d5c6d8f3ba8f341f4d20c88afe34c57ffe69c7f
-
-
-
     content = content + "<div id='divMemberDetaili'";
       
     if (members[0].expanded) 
