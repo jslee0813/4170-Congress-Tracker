@@ -1,10 +1,9 @@
 // API keys
 var auth = {
   version: "v3",
-  campaign_finance_api_key: "",
-  congress_api_key: "",
-  times_newswire_api_key: "",
-  article_search_api_key: "",
+  campaign_finance_api_key: "69769739adad5ec9e5044090d867a62e:14:70154539",
+  congress_api_key: "96625a843db6b50dcdb259b94e281246:8:70154539",
+  article_search_api_key: "1e94e0ac552a0041906f50590784f934:9:70154539",
 }
 
 var members = [];
@@ -70,6 +69,7 @@ $(document).keydown(function(key) {
 function intToDollar(num) {
     return "$" + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
 // get campaign finance details by member 
 function getCampaignFinance(i) {
   name = members[i].name
@@ -335,9 +335,22 @@ function getMemberBio() {
 
       $.each(data["results"], function(i, result) {
         var full_name = result["name"].split(' ');
+        var nameFL = "";
+        if (full_name.length == 2) {
+          nameFL = full_name[0] + " " + full_name[1];
+        } else if (full_name.length == 3) {
+          if (full_name[1].length < 3) { //middle initial 
+            nameFL = full_name[0] + " " + full_name[2];
+          } else { // suffix
+            nameFL = full_name[0] + " " + full_name[1];
+          }
+        } else if (full_name.length == 4) {
+          nameFL = full_name[0] + " " + full_name[2];
+        } 
+
         member = {
           id: result["id"],
-          name: full_name[0] + " " + full_name[full_name.length-1],
+          name: nameFL,
           role: result["role"],
           gender: result["gender"],
           party: result["party"],
