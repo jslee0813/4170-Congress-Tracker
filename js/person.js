@@ -71,82 +71,108 @@ function intToDollar(num) {
 }
 
 // get campaign finance details by member 
-function getCampaignFinance(i) {
-  name = members[i].name
-  temp_name = name.split(" ")
-  first_name = temp_name[0].toUpperCase()
-  last_name = temp_name[temp_name.length -1].toUpperCase()
+function getCampaignFinance() {
+  var length = members.length
+  // get the details of the member search 
+  var state = store.get("state").toUpperCase();
+  var chamber = store.get("chamber").toLowerCase();
+  var district = store.get("district").toLowerCase();
 
-  // to calculate the year that the member was elected, find the next election year possible and subtract 6 for Senate
-  // if House, leave as 2014, all House members were elected/re-elected in 2014
-  year = members[i].next_election
+  // for each member found through search, call State Candidates under Campaign Finance API to get the unique fec_id per Congress member
+  // fec_id is used to find the candidate details aka financial details by Congres member 
+  for (var i = 0; i < length; i++){
+    (function (i){
+      var member = members[i]
+      var name = member['name']
+      var split_name = name.split(" ")
+      // parse name for first and last
+      if (split_name.length == 2){
+        var first_name = split_name[0].toUpperCase()
+        var last_name = split_name[1].toUpperCase()
+      }
+      // if there is a middle initial, take it out
+      else {
+        var first_name = split_name[0].toUpperCase()
+        var last_name = split_name[split_name.length - 1].toUpperCase()
+      }
 
-  // set district for senate to 1, NYT API has bug that requires district for some Senate members 
-  if (members[i].chamber == "senate") 
-  {
-    members[i].district = 1
-    year = year - 6
-  }
-  else
-  {
-    year = 2014
-  }
-  members[i].financial_campaign_cycle = year
-  $.ajax
-  ({
-    url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + members[i].financial_campaign_cycle + "/seats/" + members[i].state + "/" + members[i].chamber + "/" + members[i].district + ".json?api-key=" + auth.campaign_finance_api_key,
-    type: "GET", 
-    dataType: "jsonp", 
-    cache: true, 
-    success: function(data)
-    {
-      $.each(data["results"], function(j, result) 
+      // campaign finance is found by campaign cycle year
+      // to find the financial info, take the next year they are up for election and subract 6, if Senate
+      // if House, all members were last reelected in 2014
+      var next_campaign_year = member['next_election']
+      // if chamber is senate, set district number to 1 
+      // bug in the NYT API, a district number must be set for Senate 
+      if (!district)
       {
-        candidate_name = result['candidate']['name'].split(", ")
-        if (candidate_name.length > 1)
+        district = 1
+      }
+      // set the campaign cycle year 
+      if (chamber == "senate") {
+        var campaign_cycle_year = next_campaign_year - 6
+      }
+      else {
+        var campaign_cycle_year = 2014 
+      }
+      members[i].campaign_cycle_year = campaign_cycle_year
+      // find all state candidates that ran in campaign cycle year and check if the result contains the member we are searching for 
+      $.ajax ({
+        url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + campaign_cycle_year + "/seats/" + state + "/" + chamber + "/" + district + ".json?api-key=" + auth.campaign_finance_api_key,
+        type: "GET", 
+        dataType: "jsonp", 
+        cache: true, 
+        success: function(data)
         {
-          candidate_last_name = candidate_name[0].toUpperCase()
-          candidate_first_name = candidate_name[1].split(" ")[0].toUpperCase()
-        }
-        else
-        {
-          candidate_last_name = candidate_name[0].toUpperCase()
-          candidate_first_name = ""
-        }
-        if (candidate_last_name == last_name && candidate_first_name == first_name)
-        {
-          members[i].fec_id = result['candidate']['id']
-          $.ajax
-          ({
-            url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + members[i].financial_campaign_cycle + "/candidates/" + members[i].fec_id + ".json?api-key=" + auth.campaign_finance_api_key, 
-            type: "GET", 
-            dataType: "jsonp",
-            cache: true, 
-            success: function(data)
+          $.each(data["results"], function(index, result) 
+          {
+            var candidate_name = result['candidate']['name'].split(", ")
+            // parse name 
+            if (candidate_name.length > 1)
             {
-              response = data['results'][0]
-              members[i].fec_url = response['fec_uri']
-              members[i].total_contributions = intToDollar(response['total_contributions'])
-              members[i].total_disbursements = intToDollar(response['total_disbursements'])
-              members[i].total_from_individuals = intToDollar(response['total_from_individuals'])
-              members[i].total_from_pacs = intToDollar(response['total_from_pacs'])
-              members[i].total_receipts = intToDollar(response['total_receipts'])
-              members[i].total_refunds = intToDollar(response['total_refunds'])
-            },
-            error: function(error){
-              console.log(error)
+              var candidate_last_name = candidate_name[0].toUpperCase()
+              var candidate_first_name = candidate_name[1].split(" ")[0].toUpperCase()
+            }
+            else
+            {
+              var candidate_last_name = candidate_name[0].toUpperCase()
+              var candidate_first_name = ""
+            }
+            // check if we find a match 
+            // if so, get the fec_id and use "Candidate Details" to get the financial information for this member
+            if (candidate_last_name == last_name && candidate_first_name == first_name)
+            {
+              var fec_id = result['candidate']['id']
+              members[i].fec_id = fec_id
+              $.ajax
+              ({
+                url: "http://api.nytimes.com/svc/elections/us/v3/finances/" + campaign_cycle_year + "/candidates/" + fec_id + ".json?api-key=" + auth.campaign_finance_api_key, 
+                type: "GET", 
+                dataType: "jsonp",
+                cache: true, 
+                success: function(data)
+                {
+                  // store the campaign finance information 
+                  response = data['results'][0]
+                  members[i].total_contributions = intToDollar(response['total_contributions'])
+                  members[i].total_disbursements = intToDollar(response['total_disbursements'])
+                  members[i].total_from_individuals = intToDollar(response['total_from_individuals'])
+                  members[i].total_from_pacs = intToDollar(response['total_from_pacs'])
+                  members[i].total_receipts = intToDollar(response['total_receipts'])
+                  members[i].total_refunds = intToDollar(response['total_refunds'])
+                },
+                error: function(error){
+                  console.log(error)
+                }
+              })
             }
           })
+        },
+        error: function(error)
+        {
+          $('#').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see financial information.</div>");
         }
       })
-    }, 
-    error: function(error)
-    {
-      $('#').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see financial information.</div>");
-
-      console.log(error)
-    }
-  })
+    })(i);
+  }
 }
 
 // Bill display code - Lindsay
@@ -316,6 +342,10 @@ function getMemberBio() {
           expanded: false,
           loaded: false,
           favorite: false,
+          // set default campaign finance numbers
+          // sometimes the API fails and returns null or throws a 404 error
+          // discussed it with Rahul and for the members of Congress we can't get numbers for
+          // we display a default value for the sake of the UI
           fec_id: "",
           total_contributions: "$872,001",
           total_disbursements: "$20,638",
@@ -338,7 +368,7 @@ function getMemberBio() {
         }
       });
 
-      getCampaignFinance(0)
+      getCampaignFinance()
       getMemberInfo(members[0].id);
       displayArticles();
     },
@@ -574,12 +604,6 @@ function getMemberInfo(member_id) {
         most_recent_vote: member.most_recent_vote,
         roles: roles
       };
-         
-      // getCampaignFinance(members[i]);   
-        // renderMembers(i);
-        // uncomment the console.log(members[i]) to see campaign finance being logged to console
-        // will update it to index.html tomorrow
-        //console.log(members[i])
         
       $("#spnMember0").attr("class", 'glyphicon glyphicon-collapse-down');
       $("#divMemberDetail0").slideDown("slow");
