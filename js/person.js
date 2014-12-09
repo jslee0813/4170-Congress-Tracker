@@ -206,35 +206,24 @@ function displayBills(member_id) {
 
 }
 
-//Article display code --Connor
+//Article display code --Connor Claflin
 function displayArticles(){
   
   $('#articleSection').empty();
 
   var url1;
-  var url2;
   var articleArray1;
   var articleArray2;
-  var senatePage;
   var alternate;
   var memberName = members[0].name;
   var pos = memberName.search(" ");
   var fName = memberName.slice(0, pos);
   var lName = memberName.slice(pos + 1, memberName.length);
   
+  //Constructs url for searching by the name of the member, and articles or this year only
   url1 = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + fName + "+" + lName + "&begin_date=20140101&api-key=" + auth.article_search_api_key;
-  if(members.length > 1)
-  {
-      memberName = members[1].name;
-      pos = memberName.search(" ");
-      fName = memberName.slice(0, pos);
-      lName = memberName.slice(pos + 1, memberName.length);
-      
-      url2 = "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + fName + "+" + lName + "&begin_date20140101&api-key=" + auth.article_search_api_key;
-      senatePage = true;
-  }
   
-  //first article search, done whether there are two members on page or not.
+  //Search call for the articles
   $.ajax({
       url: url1,
       type: "get",
@@ -243,11 +232,7 @@ function displayArticles(){
       success:function(json){
         articleArray = json.response.docs;
 
-        //If the page has two members, then only 3 articles for the first member will be displayed in this ajax call
         var end = 5;
-        if(senatePage) {
-          end = 3;
-        }
         for(var i = 0; i < end; i++)
         {
           var date_time = articleArray[i].pub_date.split(/Z/)[0].split(/T/);
@@ -255,6 +240,7 @@ function displayArticles(){
           if (articleArray[i].byline.length != 0) {
             byline = articleArray[i].byline.original + "<br>";
           }
+          //Displays the articles
           $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray[i].web_url + "\" target=\"_blank\">" 
                                     + articleArray[i].headline.main + "</a><h2><p class=\"articleDetail\">"
                                     + byline
@@ -266,37 +252,6 @@ function displayArticles(){
           $('#articleSection').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see news information.</div>");
       },
   });
-
-  //If it is a senate page then another search for articles will be done for the other senator on the page
-  //The articles are appended to the bottom of the list of articles on screen. This functionality can be
-  //changed, but I did it this way because of the asynchronous behavior of the ajax calls
-  if(senatePage)
-  {
-      $.ajax({
-          url: url2,
-          type: "get",
-          dataType: "json",
-          cache: true,
-          success:function(json){
-
-              json;
-              articleArray2 = json.response.docs;
-   
-              for(var i = 0; i < 3; i++)
-              {
-                  $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray2[i].web_url + "\" target=\"_blank\">" 
-                                              + articleArray2[i].headline.main + "</a><h2><p class=\"articleDetail\">"
-                                              + articleArray2[i].byline.original + "<br>" 
-                                              + articleArray2[i].pub_date + "<br></p><p class=\"snippet\">" 
-                                              + articleArray2[i].snippet + "</p></div>");
-              }
-          
-          },
-          error:function(){
-            $('#articleSection').empty().append("<div class='error'>Error occurred contacting the API. Please reload the page to see news information.</div>");
-          },
-      });
-  }
 }
 
 function btnShowSearchOnClick() {

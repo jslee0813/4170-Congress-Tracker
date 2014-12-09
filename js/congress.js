@@ -115,6 +115,7 @@ function displayArticles(){
   var count = 0;
   $('#articleSection').empty();
 
+  //Get favorites from jstore
   var favorites = store.get("favorites");
 
 
@@ -135,11 +136,13 @@ function displayArticles(){
           		
           			for(var i = 0; i < 2; i++)
           			{
+          				//Format date of article
               		    var date_time = articleArray[i].pub_date.split(/Z/)[0].split(/T/);
               			var byline = "";
               			if (articleArray[i].byline.length != 0){
                 		    byline = articleArray[i].byline.original + "<br>";
               		    }
+              		    //Display articles
               		    $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray[i].web_url + "\" target=\"_blank\">" 
                                           			+ articleArray[i].headline.main + "</a><h2><p class=\"articleDetail\">"
                                           			+ byline
@@ -169,11 +172,13 @@ function displayArticles(){
           
           for(var i = 0; i < (10 - count); i++)
           {
+          	//Formate date of article
             var date_time = articleArray[i].pub_date.split(/Z/)[0].split(/T/);
             var byline = "";
             if (articleArray[i].byline.length != 0) {
               byline = articleArray[i].byline.original + "<br>";
             }
+            //Display the articles
             $('#articleSection').append("<div class=\"well\">" + "<h2><a href=\"" + articleArray[i].web_url + "\" target=\"_blank\">" 
                                         + articleArray[i].headline.main + "</a><h2><p class=\"articleDetail\">"
                                         + byline
