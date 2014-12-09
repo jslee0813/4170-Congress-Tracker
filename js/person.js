@@ -71,8 +71,9 @@ function intToDollar(num) {
 }
 
 // get campaign finance details by member 
-function getCampaignFinance() {
-  var length = members.length
+function getCampaignFinance(member_index) {
+  var length = member_index
+  //var length = members.length
   // get the details of the member search 
   var state = store.get("state").toUpperCase();
   var chamber = store.get("chamber").toLowerCase();
@@ -368,7 +369,7 @@ function getMemberBio() {
         }
       });
 
-      getCampaignFinance()
+      getCampaignFinance(0)
       getMemberInfo(members[0].id);
       displayArticles();
     },
