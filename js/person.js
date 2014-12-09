@@ -81,7 +81,7 @@ function getCampaignFinance(member_index) {
 
   // for each member found through search, call State Candidates under Campaign Finance API to get the unique fec_id per Congress member
   // fec_id is used to find the candidate details aka financial details by Congres member 
-  for (var i = 0; i < length; i++){
+  for (var i = 0; i <= length; i++){
     (function (i){
       var member = members[i]
       var name = member['name']
